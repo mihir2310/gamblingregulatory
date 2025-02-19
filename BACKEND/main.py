@@ -6,9 +6,13 @@ import fitz
 
 
 if __name__ == "__main__":
-    compliance_text = extract_page_text("gambling_laws/sportsbettingregulations.pdf", 353, 364)
-    
-    #req = question_request("What is the capital of China?")
-    print(compliance_text)
+
+    # #Sample text-scraping Query
+    # compliance_text = extract_page_text("gambling_laws/sportsbettingregulations.pdf", 353, 364)
+    # print(compliance_text)
+
+    # # Sample OPENAI API Request
+    # req = question_request("What is the capital of China?")
+    # print(req)
 
 
