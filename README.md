@@ -1,3 +1,3 @@
 # gamblingregulatory
 
-For sports gambling/betting-related regulatory practices.
+AI-driven sports gambling/betting-related compliance.
