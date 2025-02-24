@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Box, CssBaseline } from '@mui/mate
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ComplianceCheck from './pages/ComplianceCheck';
+import Result from './pages/Result';  // Import the Result component
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/compliance" element={<ComplianceCheck />} />
+          <Route path="/compliance/result" element={<Result />} /> {/* New result route */}
         </Routes>
       </Box>
     </Router>
