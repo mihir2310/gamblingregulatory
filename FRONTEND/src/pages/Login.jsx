@@ -1,19 +1,18 @@
 // pages/Login.jsx
-
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    // Add your login logic here (authentication, API calls, etc.)
+    // Example login validation (replace with real validation)
     if (username === 'admin' && password === 'admin') {
-      // For now, just navigate to the dashboard
-      navigate('/dashboard');
+      onLogin();  // Call the onLogin function from App.jsx
+      navigate('/dashboard');  // Navigate to the dashboard
     } else {
       alert('Invalid credentials');
     }

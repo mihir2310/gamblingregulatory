@@ -1,24 +1,59 @@
-// App.jsx
-
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Box, CssBaseline } from '@mui/material';
-import Navbar from './components/Navbar'; // Import the Navbar component
+import { AppBar, Toolbar, Typography, Button, Box, CssBaseline } from '@mui/material';
+import { useState } from 'react';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
   return (
     <Router>
       <CssBaseline />
-      <Navbar /> {/* Use the Navbar here */}
-      {/* Add padding to prevent content from hiding behind the AppBar */}
+      <AppBar position="fixed">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Alea
+          </Typography>
+          {isAuthenticated ? (
+            <>
+              <Button color="inherit" component={Link} to="/">
+                Home
+              </Button>
+              <Button color="inherit" component={Link} to="/dashboard">
+                Dashboard
+              </Button>
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" component={Link} to="/">
+                Home
+              </Button>
+              <Button color="inherit" component={Link} to="/login">
+                Login
+              </Button>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+
       <Box sx={{ padding: 3, marginTop: '64px' }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/login" element={<Login />} /> {/* Add login route */}
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Login onLogin={handleLogin} />} />
         </Routes>
       </Box>
     </Router>
