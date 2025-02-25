@@ -6,6 +6,7 @@ import { Box, CssBaseline } from '@mui/material';
 import Navbar from './components/Navbar'; // Import the Navbar component
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} /> {/* Add login route */}
         </Routes>
       </Box>
     </Router>
