@@ -1,5 +1,5 @@
 import { Typography, Box, Container, Button, Stack, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
+import { Add as AddIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useState } from 'react';
 
 function Dashboard() {
@@ -8,8 +8,17 @@ function Dashboard() {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10)); // Keep only the latest 10 files
+      // Check if the file is already uploaded
+      if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
+        setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10)); // Keep only the latest 10 files
+      } else {
+        alert('This file has already been uploaded.');
+      }
     }
+  };
+
+  const handleFileRemove = (fileToRemove) => {
+    setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileToRemove.name));
   };
 
   return (
@@ -46,6 +55,14 @@ function Dashboard() {
               <ListItem key={index} disablePadding>
                 <ListItemButton>
                   <ListItemText primary={file.name} />
+                  <IconButton
+                    edge="end"
+                    color="error"
+                    onClick={() => handleFileRemove(file)}
+                    sx={{ marginLeft: 'auto' }}
+                  >
+                    <CloseIcon />
+                  </IconButton>
                 </ListItemButton>
               </ListItem>
             ))}
