@@ -1,5 +1,9 @@
+// App.jsx
+
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box, CssBaseline } from '@mui/material';
+import { Box, CssBaseline } from '@mui/material';
+import Navbar from './components/Navbar'; // Import the Navbar component
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 
@@ -7,15 +11,7 @@ function App() {
   return (
     <Router>
       <CssBaseline />
-      <AppBar position="fixed">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Alea
-          </Typography>
-          <Button color="inherit" component={Link} to="/">Home</Button>
-          <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
-        </Toolbar>
-      </AppBar>
+      <Navbar /> {/* Use the Navbar here */}
       {/* Add padding to prevent content from hiding behind the AppBar */}
       <Box sx={{ padding: 3, marginTop: '64px' }}>
         <Routes>
