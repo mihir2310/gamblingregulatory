@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Box, CssBaseline } from '@mui/material';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import ComplianceCheck from './pages/ComplianceCheck';
-import Result from './pages/Result';  // Import the Result component
 
 function App() {
   return (
@@ -16,7 +14,6 @@ function App() {
           </Typography>
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
-          <Button color="inherit" component={Link} to="/compliance">Compliance Check</Button>
         </Toolbar>
       </AppBar>
       {/* Add padding to prevent content from hiding behind the AppBar */}
@@ -24,8 +21,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/compliance" element={<ComplianceCheck />} />
-          <Route path="/compliance/result" element={<Result />} /> {/* New result route */}
         </Routes>
       </Box>
     </Router>
