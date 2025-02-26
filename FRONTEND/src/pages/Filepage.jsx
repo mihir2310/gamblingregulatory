@@ -1,18 +1,21 @@
 // Filepage.jsx
-import { Typography, Box, Container, Button, Stack, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Typography, Box, Button, Stack, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { PlayArrow as PlayArrowIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 
 const Filepage = () => {
-  const { fileName } = useParams(); // Extract fileName from URL parameter
+  const { fileName } = useParams(); // Extract fileName from URL
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [selectedFileURL, setSelectedFileURL] = useState(null); // Store URL for iframe
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
+        const fileURL = URL.createObjectURL(file);
         setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
+        setSelectedFileURL(fileURL); // Display file immediately
       } else {
         alert('This file has already been uploaded.');
       }
@@ -21,11 +24,14 @@ const Filepage = () => {
 
   const handleFileRemove = (fileToRemove) => {
     setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileToRemove.name));
+    if (selectedFileURL && fileToRemove.name === fileName) {
+      setSelectedFileURL(null);
+    }
   };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Left Toolbar */}
+      {/* Sidebar */}
       <Box
         sx={{
           width: '250px',
@@ -56,7 +62,11 @@ const Filepage = () => {
             {uploadedFiles.map((file, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  <Link to={`/dashboard/${file.name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link
+                    to={`/dashboard/${file.name}`}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                    onClick={() => setSelectedFileURL(URL.createObjectURL(file))}
+                  >
                     <ListItemText primary={file.name} />
                   </Link>
                   <IconButton
@@ -74,7 +84,7 @@ const Filepage = () => {
         </Stack>
       </Box>
 
-      {/* Main Content */}
+      {/* Main Content - PDF Preview */}
       <Box
         sx={{
           flexGrow: 1,
@@ -86,24 +96,19 @@ const Filepage = () => {
           padding: 3,
         }}
       >
-        <Container
-          maxWidth="md"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center',
-            height: '100%',
-          }}
-        >
-          <Typography variant="h3" gutterBottom>
-            {fileName}
+        {selectedFileURL ? (
+          <iframe
+            src={selectedFileURL}
+            title={fileName}
+            width="100%"
+            height="100%"
+            style={{ border: 'none' }}
+          />
+        ) : (
+          <Typography variant="h5" color="textSecondary">
+            Select or upload a file to view it here.
           </Typography>
-          <Typography variant="body1">
-            This page will eventually display details and scan results for <strong>{fileName}</strong>.
-          </Typography>
-        </Container>
+        )}
       </Box>
     </Box>
   );

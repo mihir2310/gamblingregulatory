@@ -1,31 +1,61 @@
-import { Typography, Box, Container, Button, Stack, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { Add as AddIcon, Close as CloseIcon } from '@mui/icons-material';
-import { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-
+import {
+  Typography,
+  Box,
+  Container,
+  Button,
+  Stack,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  TextField,
+} from '@mui/material';
+import { Add as AddIcon, Close as CloseIcon, Check as CheckIcon } from '@mui/icons-material';
+import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function Dashboard() {
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [editingDocIndex, setEditingDocIndex] = useState(null);
+  const [newDocName, setNewDocName] = useState('');
+  const inputRef = useRef(null);
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Check if the file is already uploaded
-      if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
-        setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10)); // Keep only the latest 10 files
-      } else {
-        alert('This file has already been uploaded.');
-      }
+  // Auto-focus when renaming
+  useEffect(() => {
+    if (editingDocIndex !== null && inputRef.current) {
+      inputRef.current.focus();
     }
+  }, [editingDocIndex]);
+
+  const handleCreateNewDocument = () => {
+    const defaultName = `Untitled-${documents.length + 1}`;
+    const newDoc = { name: defaultName };
+    setDocuments((prevDocs) => [newDoc, ...prevDocs]);
+    setEditingDocIndex(0);
+    setNewDocName(defaultName);
   };
 
-  const handleFileRemove = (fileToRemove) => {
-    setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileToRemove.name));
+  const handleRenameDocument = (index) => {
+    if (newDocName.trim() === '') {
+      alert('Document name cannot be empty.');
+      return;
+    }
+    const updatedDocs = documents.map((doc, i) =>
+      i === index ? { ...doc, name: newDocName } : doc
+    );
+    setDocuments(updatedDocs);
+    setEditingDocIndex(null);
+  };
+
+  const handleDocRemove = (index) => {
+    setDocuments((prevDocs) => prevDocs.filter((_, i) => i !== index));
+    setEditingDocIndex(null);
   };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Left Toolbar */}
+      {/* Sidebar with Create New */}
       <Box
         sx={{
           width: '250px',
@@ -40,34 +70,43 @@ function Dashboard() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            component="label"
+            onClick={handleCreateNewDocument}
             sx={{ borderRadius: '8px' }}
           >
-            Create New (+)
-            <input
-              type="file"
-              hidden
-              accept="application/pdf"
-              onChange={handleFileUpload}
-            />
+            Create New Document
           </Button>
 
           <List>
-            {uploadedFiles.map((file, index) => (
+            {documents.map((doc, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  {/* Wrap the file name with the Link component */}
-                  <Link to={`/dashboard/${file.name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <ListItemText primary={file.name} />
-                  </Link>
-                  <IconButton
-                    edge="end"
-                    color="error"
-                    onClick={() => handleFileRemove(file)}
-                    sx={{ marginLeft: 'auto' }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
+                  {editingDocIndex === index ? (
+                    <>
+                      <TextField
+                        inputRef={inputRef}
+                        value={newDocName}
+                        onChange={(e) => setNewDocName(e.target.value)}
+                        size="small"
+                        sx={{ flexGrow: 1 }}
+                        onKeyDown={(e) => e.key === 'Enter' && handleRenameDocument(index)}
+                      />
+                      <IconButton color="primary" onClick={() => handleRenameDocument(index)}>
+                        <CheckIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to={`/dashboard/${encodeURIComponent(doc.name)}`}
+                        style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
+                      >
+                        <ListItemText primary={doc.name} />
+                      </Link>
+                      <IconButton color="error" onClick={() => handleDocRemove(index)}>
+                        <CloseIcon />
+                      </IconButton>
+                    </>
+                  )}
                 </ListItemButton>
               </ListItem>
             ))}
@@ -102,7 +141,7 @@ function Dashboard() {
             Dashboard
           </Typography>
           <Typography variant="body1">
-            Get insights, reports, and manage your compliance data all in one place.
+            Manage your projects and compliance data all in one place. Click on a document to start working.
           </Typography>
         </Container>
       </Box>
