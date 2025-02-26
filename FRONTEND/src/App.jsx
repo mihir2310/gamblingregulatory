@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Filepage from './components/Filepage';  
+import Filepage from './components/Filepage';  // Import Filepage.jsx component
+//yo
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -55,6 +56,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Login onLogin={handleLogin} />} />
+          {/* Add route for Filepage with dynamic URL */}
+          <Route path="/dashboard/:fileName" element={<Filepage />} />
         </Routes>
       </Box>
     </Router>

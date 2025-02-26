@@ -1,6 +1,8 @@
 import { Typography, Box, Container, Button, Stack, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { Add as AddIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+
 
 function Dashboard() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -54,7 +56,10 @@ function Dashboard() {
             {uploadedFiles.map((file, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  <ListItemText primary={file.name} />
+                  {/* Wrap the file name with the Link component */}
+                  <Link to={`/dashboard/${file.name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <ListItemText primary={file.name} />
+                  </Link>
                   <IconButton
                     edge="end"
                     color="error"

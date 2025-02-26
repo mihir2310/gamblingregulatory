@@ -1,20 +1,15 @@
+// Filepage.jsx
 import { useParams } from 'react-router-dom';
 
-const FilePage = () => {
-  const { fileName } = useParams();
+const Filepage = () => {
+  const { fileName } = useParams(); // Extract fileName from URL parameter
 
   return (
-    <div className="dashboard">
-      <div className="sidebar">
-        <h3>Sidebar</h3>
-        {/* Add buttons or links here if you want the sidebar consistent */}
-      </div>
-      <div className="content" style={{ padding: '20px' }}>
-        <h2>Placeholder for {fileName}</h2>
-        <p>This page will eventually display details for {fileName}.</p>
-      </div>
+    <div style={{ padding: '20px' }}>
+      <h2>Placeholder for {fileName}</h2>
+      <p>This page will eventually display details for {fileName}.</p>
     </div>
   );
 };
 
-export default FilePage;
+export default Filepage;
