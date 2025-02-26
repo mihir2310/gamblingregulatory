@@ -1,4 +1,3 @@
-// Filepage.jsx
 import {
   Typography,
   Box,
@@ -10,7 +9,7 @@ import {
   ListItemButton,
   ListItemText,
 } from '@mui/material';
-import { Edit as EditIcon, Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import mammoth from 'mammoth';
@@ -18,43 +17,43 @@ import mammoth from 'mammoth';
 const Filepage = () => {
   const { fileName } = useParams();
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [docContent, setDocContent] = useState(''); // Store editable HTML content
+  const [selectedFileContent, setSelectedFileContent] = useState('');
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
-        if (file.name.endsWith('.docx')) {
-          const arrayBuffer = await file.arrayBuffer();
-          mammoth
-            .convertToHtml({ arrayBuffer })
-            .then((result) => {
-              setDocContent(result.value);
-              setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
-            })
-            .catch((err) => console.error('Error converting file:', err));
+      if (file.name.endsWith('.docx')) {
+        if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
+          const content = await readDocxFile(file);
+          setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
+          setSelectedFileContent(content);
         } else {
-          alert('Only .docx files are supported.');
+          alert('This file has already been uploaded.');
         }
       } else {
-        alert('This file has already been uploaded.');
+        alert('Please upload a .docx file.');
       }
     }
+  };
+
+  const readDocxFile = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const { value } = await mammoth.convertToHtml({ arrayBuffer });
+    return value;
+  };
+
+  const handleFileSelect = async (file) => {
+    const content = await readDocxFile(file);
+    setSelectedFileContent(content);
   };
 
   const handleFileRemove = (fileToRemove) => {
     setUploadedFiles((prevFiles) =>
       prevFiles.filter((file) => file.name !== fileToRemove.name)
     );
-    if (fileToRemove.name === fileName) setDocContent('');
-  };
-
-  const handleFileClick = async (file) => {
-    const arrayBuffer = await file.arrayBuffer();
-    mammoth
-      .convertToHtml({ arrayBuffer })
-      .then((result) => setDocContent(result.value))
-      .catch((err) => console.error('Error converting file:', err));
+    if (fileToRemove.name === fileName) {
+      setSelectedFileContent('');
+    }
   };
 
   return (
@@ -73,12 +72,17 @@ const Filepage = () => {
         <Stack spacing={2}>
           <Button
             variant="contained"
-            startIcon={<EditIcon />}
+            startIcon={<PlayArrowIcon />}
             component="label"
             sx={{ borderRadius: '8px' }}
           >
-            Upload .docx
-            <input type="file" hidden accept=".docx" onChange={handleFileUpload} />
+            Upload .docx File
+            <input
+              type="file"
+              hidden
+              accept=".docx"
+              onChange={handleFileUpload}
+            />
           </Button>
 
           <List>
@@ -86,13 +90,17 @@ const Filepage = () => {
               <ListItem key={index} disablePadding>
                 <ListItemButton>
                   <Link
-                    to={`/dashboard/${file.name}`}
+                    to={`/dashboard/${encodeURIComponent(file.name)}`}
                     style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
-                    onClick={() => handleFileClick(file)}
+                    onClick={() => handleFileSelect(file)}
                   >
                     <ListItemText primary={file.name} />
                   </Link>
-                  <IconButton color="error" onClick={() => handleFileRemove(file)}>
+                  <IconButton
+                    edge="end"
+                    color="error"
+                    onClick={() => handleFileRemove(file)}
+                  >
                     <CloseIcon />
                   </IconButton>
                 </ListItemButton>
@@ -102,36 +110,38 @@ const Filepage = () => {
         </Stack>
       </Box>
 
-      {/* Main Content - Editable DOCX */}
+      {/* Main Content - Editable DOCX Preview */}
       <Box
         sx={{
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
           alignItems: 'center',
           overflow: 'auto',
-          padding: 3,
+          padding: 4,
+          backgroundColor: '#fafafa',
         }}
       >
-        {docContent ? (
+        {selectedFileContent ? (
           <Box
             contentEditable
             suppressContentEditableWarning
-            dangerouslySetInnerHTML={{ __html: docContent }}
-            style={{
+            sx={{
               width: '100%',
-              height: '100%',
-              border: '1px solid #ccc',
-              padding: '20px',
-              overflowY: 'auto',
-              outline: 'none',
+              maxWidth: '800px', // ✅ Restrict width
+              height: 'calc(100vh - 80px)', // ✅ Height control
+              border: '1px solid #ddd',
+              borderRadius: '10px',
+              padding: '24px',
               backgroundColor: '#fff',
+              overflowY: 'auto',
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
             }}
+            dangerouslySetInnerHTML={{ __html: selectedFileContent }}
           />
         ) : (
           <Typography variant="h5" color="textSecondary">
-            Upload and select a .docx file to edit it here.
+            Select or upload a .docx file to edit it here.
           </Typography>
         )}
       </Box>

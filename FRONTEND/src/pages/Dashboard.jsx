@@ -21,17 +21,23 @@ function Dashboard() {
   const [newDocName, setNewDocName] = useState('');
   const inputRef = useRef(null);
 
-  // Auto-focus when renaming
+  // ✅ Load documents from localStorage on mount
   useEffect(() => {
-    if (editingDocIndex !== null && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [editingDocIndex]);
+    const storedDocs = JSON.parse(localStorage.getItem('documents')) || [];
+    setDocuments(storedDocs);
+  }, []);
+
+  // ✅ Save documents to localStorage whenever they change
+  const saveDocuments = (docs) => {
+    setDocuments(docs);
+    localStorage.setItem('documents', JSON.stringify(docs));
+  };
 
   const handleCreateNewDocument = () => {
     const defaultName = `Untitled-${documents.length + 1}`;
     const newDoc = { name: defaultName };
-    setDocuments((prevDocs) => [newDoc, ...prevDocs]);
+    const updatedDocs = [newDoc, ...documents];
+    saveDocuments(updatedDocs);
     setEditingDocIndex(0);
     setNewDocName(defaultName);
   };
@@ -44,14 +50,22 @@ function Dashboard() {
     const updatedDocs = documents.map((doc, i) =>
       i === index ? { ...doc, name: newDocName } : doc
     );
-    setDocuments(updatedDocs);
+    saveDocuments(updatedDocs);
     setEditingDocIndex(null);
   };
 
   const handleDocRemove = (index) => {
-    setDocuments((prevDocs) => prevDocs.filter((_, i) => i !== index));
+    const updatedDocs = documents.filter((_, i) => i !== index);
+    saveDocuments(updatedDocs);
     setEditingDocIndex(null);
   };
+
+  // 🔥 Auto-focus on rename input
+  useEffect(() => {
+    if (editingDocIndex !== null && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [editingDocIndex]);
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
