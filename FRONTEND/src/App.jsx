@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import Filepage from './components/Filepage';  
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
