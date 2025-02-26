@@ -76,7 +76,7 @@ const Filepage = () => {
             component="label"
             sx={{ borderRadius: '8px' }}
           >
-            Upload .docx File
+            Scan .docx File
             <input
               type="file"
               hidden
@@ -115,35 +115,51 @@ const Filepage = () => {
         sx={{
           flexGrow: 1,
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          flexDirection: 'row', // Align content in a row (placeholder + doc)
+          alignItems: 'flex-start', // Keep both aligned at the top
           overflow: 'auto',
           padding: 4,
           backgroundColor: '#fafafa',
         }}
       >
-        {selectedFileContent ? (
-          <Box
-            contentEditable
-            suppressContentEditableWarning
-            sx={{
-              width: '100%',
-              maxWidth: '800px', // ✅ Restrict width
-              height: 'calc(100vh - 80px)', // ✅ Height control
-              border: '1px solid #ddd',
-              borderRadius: '10px',
-              padding: '24px',
-              backgroundColor: '#fff',
-              overflowY: 'auto',
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            }}
-            dangerouslySetInnerHTML={{ __html: selectedFileContent }}
-          />
-        ) : (
-          <Typography variant="h5" color="textSecondary">
-            Select or upload a .docx file to edit it here.
+        {/* Placeholder Box (Larger) */}
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '750px', // Increased width for the placeholder
+            height: 'calc(100vh - 80px)', // Keep the same height as the doc
+            border: '1px solid #ddd',
+            borderRadius: '10px',
+            padding: '24px',
+            backgroundColor: '#f0f0f0', // Light gray background for placeholder
+            overflowY: 'auto',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            marginRight: 2, // Small space between placeholder and document
+          }}
+        >
+          <Typography variant="h6" color="textSecondary" align="center">
+            Placeholder
           </Typography>
-        )}
+        </Box>
+
+        {/* Editable DOCX Preview (Aligned to the right) */}
+        <Box
+          contentEditable
+          suppressContentEditableWarning
+          sx={{
+            width: '100%',
+            maxWidth: '600px', // Document width remains the same
+            height: 'calc(100vh - 80px)', // Same height for the document
+            border: '1px solid #ddd',
+            borderRadius: '10px',
+            padding: '24px',
+            backgroundColor: '#fff',
+            overflowY: 'auto',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            marginLeft: 'auto', // Align document to the right
+          }}
+          dangerouslySetInnerHTML={{ __html: selectedFileContent }}
+        />
       </Box>
     </Box>
   );
