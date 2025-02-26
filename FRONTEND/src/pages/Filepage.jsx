@@ -1,21 +1,41 @@
 // Filepage.jsx
-import { Typography, Box, Button, Stack, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { PlayArrow as PlayArrowIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from '@mui/material';
+import { Edit as EditIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
+import mammoth from 'mammoth';
 
 const Filepage = () => {
-  const { fileName } = useParams(); // Extract fileName from URL
+  const { fileName } = useParams();
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [selectedFileURL, setSelectedFileURL] = useState(null); // Store URL for iframe
+  const [docContent, setDocContent] = useState(''); // Store editable HTML content
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
-        const fileURL = URL.createObjectURL(file);
-        setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
-        setSelectedFileURL(fileURL); // Display file immediately
+        if (file.name.endsWith('.docx')) {
+          const arrayBuffer = await file.arrayBuffer();
+          mammoth
+            .convertToHtml({ arrayBuffer })
+            .then((result) => {
+              setDocContent(result.value);
+              setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
+            })
+            .catch((err) => console.error('Error converting file:', err));
+        } else {
+          alert('Only .docx files are supported.');
+        }
       } else {
         alert('This file has already been uploaded.');
       }
@@ -23,10 +43,18 @@ const Filepage = () => {
   };
 
   const handleFileRemove = (fileToRemove) => {
-    setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileToRemove.name));
-    if (selectedFileURL && fileToRemove.name === fileName) {
-      setSelectedFileURL(null);
-    }
+    setUploadedFiles((prevFiles) =>
+      prevFiles.filter((file) => file.name !== fileToRemove.name)
+    );
+    if (fileToRemove.name === fileName) setDocContent('');
+  };
+
+  const handleFileClick = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    mammoth
+      .convertToHtml({ arrayBuffer })
+      .then((result) => setDocContent(result.value))
+      .catch((err) => console.error('Error converting file:', err));
   };
 
   return (
@@ -45,17 +73,12 @@ const Filepage = () => {
         <Stack spacing={2}>
           <Button
             variant="contained"
-            startIcon={<PlayArrowIcon />}
+            startIcon={<EditIcon />}
             component="label"
             sx={{ borderRadius: '8px' }}
           >
-            Run Scan
-            <input
-              type="file"
-              hidden
-              accept="application/pdf"
-              onChange={handleFileUpload}
-            />
+            Upload .docx
+            <input type="file" hidden accept=".docx" onChange={handleFileUpload} />
           </Button>
 
           <List>
@@ -64,17 +87,12 @@ const Filepage = () => {
                 <ListItemButton>
                   <Link
                     to={`/dashboard/${file.name}`}
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                    onClick={() => setSelectedFileURL(URL.createObjectURL(file))}
+                    style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
+                    onClick={() => handleFileClick(file)}
                   >
                     <ListItemText primary={file.name} />
                   </Link>
-                  <IconButton
-                    edge="end"
-                    color="error"
-                    onClick={() => handleFileRemove(file)}
-                    sx={{ marginLeft: 'auto' }}
-                  >
+                  <IconButton color="error" onClick={() => handleFileRemove(file)}>
                     <CloseIcon />
                   </IconButton>
                 </ListItemButton>
@@ -84,7 +102,7 @@ const Filepage = () => {
         </Stack>
       </Box>
 
-      {/* Main Content - PDF Preview */}
+      {/* Main Content - Editable DOCX */}
       <Box
         sx={{
           flexGrow: 1,
@@ -96,17 +114,24 @@ const Filepage = () => {
           padding: 3,
         }}
       >
-        {selectedFileURL ? (
-          <iframe
-            src={selectedFileURL}
-            title={fileName}
-            width="100%"
-            height="100%"
-            style={{ border: 'none' }}
+        {docContent ? (
+          <Box
+            contentEditable
+            suppressContentEditableWarning
+            dangerouslySetInnerHTML={{ __html: docContent }}
+            style={{
+              width: '100%',
+              height: '100%',
+              border: '1px solid #ccc',
+              padding: '20px',
+              overflowY: 'auto',
+              outline: 'none',
+              backgroundColor: '#fff',
+            }}
           />
         ) : (
           <Typography variant="h5" color="textSecondary">
-            Select or upload a file to view it here.
+            Upload and select a .docx file to edit it here.
           </Typography>
         )}
       </Box>
