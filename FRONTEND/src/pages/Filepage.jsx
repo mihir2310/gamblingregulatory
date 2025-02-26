@@ -122,11 +122,11 @@ const Filepage = () => {
           backgroundColor: '#fafafa',
         }}
       >
-        {/* Placeholder Box (Larger) */}
+        {/* Placeholder Box (Decently sized) */}
         <Box
           sx={{
             width: '100%',
-            maxWidth: '750px', // Increased width for the placeholder
+            maxWidth: '500px', // Reasonably sized placeholder
             height: 'calc(100vh - 80px)', // Keep the same height as the doc
             border: '1px solid #ddd',
             borderRadius: '10px',
