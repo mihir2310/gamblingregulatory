@@ -11,13 +11,16 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import mammoth from 'mammoth';
 
 const Filepage = () => {
   const { fileName } = useParams();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState('');
+  const [resizeRatio, setResizeRatio] = useState(0.5); // 50% for each section
+  const containerRef = useRef(null);
+  const isDraggingRef = useRef(false);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -56,17 +59,52 @@ const Filepage = () => {
     }
   };
 
+  const handleResizeStart = (e) => {
+    e.preventDefault();
+    isDraggingRef.current = true;
+    document.addEventListener('mousemove', handleResize);
+    document.addEventListener('mouseup', handleResizeEnd);
+  };
+
+  const handleResize = (e) => {
+    if (!isDraggingRef.current || !containerRef.current) return;
+    
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const relativeX = e.clientX - containerRect.left;
+    const containerWidth = containerRect.width;
+    
+    let newRatio = relativeX / containerWidth;
+    newRatio = Math.max(0.1, Math.min(0.9, newRatio));
+    
+    setResizeRatio(newRatio);
+  };
+
+  const handleResizeEnd = () => {
+    isDraggingRef.current = false;
+    document.removeEventListener('mousemove', handleResize);
+    document.removeEventListener('mouseup', handleResizeEnd);
+  };
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('mousemove', handleResize);
+      document.removeEventListener('mouseup', handleResizeEnd);
+    };
+  }, []);
+
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Sidebar */}
+    <Box sx={{ display: 'flex', height: '100vh', width: '180vh'}}>
+      {/* Sidebar - Fixed width */}
       <Box
         sx={{
           width: '250px',
+          flexShrink: 0,
           backgroundColor: '#f5f5f5',
           padding: 2,
           display: 'flex',
           flexDirection: 'column',
           overflowY: 'auto',
+          borderRight: '1px solid #ddd',
         }}
       >
         <Stack spacing={2}>
@@ -110,55 +148,82 @@ const Filepage = () => {
         </Stack>
       </Box>
 
-      {/* Main Content - Editable DOCX Preview */}
+      {/* Main Content - Full Width */}
       <Box
+        ref={containerRef}
         sx={{
           flexGrow: 1,
           display: 'flex',
-          flexDirection: 'row', // Align content in a row (placeholder + doc)
-          alignItems: 'flex-start', // Keep both aligned at the top
-          overflow: 'auto',
+          flexDirection: 'row',
+          alignItems: 'stretch',
+          height: '100vh',
+          overflow: 'hidden',
           padding: 4,
           backgroundColor: '#fafafa',
+          position: 'relative',
         }}
       >
-        {/* Placeholder Box (Decently sized) */}
+        {/* Placeholder Box */}
         <Box
           sx={{
-            width: '100%',
-            maxWidth: '500px', // Reasonably sized placeholder
-            height: 'calc(100vh - 80px)', // Keep the same height as the doc
+            width: `${resizeRatio * 100}%`,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             border: '1px solid #ddd',
             borderRadius: '10px',
             padding: '24px',
-            backgroundColor: '#f0f0f0', // Light gray background for placeholder
+            backgroundColor: '#f0f0f0',
             overflowY: 'auto',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            marginRight: 2, // Small space between placeholder and document
+            transition: 'width 0.1s ease',
           }}
         >
-          <Typography variant="h6" color="textSecondary" align="center">
+          <Typography variant="h6" color="textSecondary">
             Placeholder
           </Typography>
         </Box>
 
-        {/* Editable DOCX Preview (Aligned to the right) */}
+        {/* Resizer Handle */}
         <Box
-          contentEditable
-          suppressContentEditableWarning
           sx={{
-            width: '100%',
-            maxWidth: '600px', // Document width remains the same
-            height: 'calc(100vh - 80px)', // Same height for the document
+            width: '12px',
+            cursor: 'col-resize',
+            backgroundColor: '#ddd',
+            borderRadius: '4px',
+            zIndex: 10,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            '&:hover': {
+              backgroundColor: '#bbb',
+            },
+            '&::after': {
+              content: '""',
+              height: '30px',
+              width: '4px',
+              backgroundColor: '#999',
+              borderRadius: '2px',
+            }
+          }}
+          onMouseDown={handleResizeStart}
+        />
+
+        {/* Editable DOCX Preview */}
+        <Box
+          sx={{
+            width: `${(1 - resizeRatio) * 100}%`,  // Adjust width dynamically
             border: '1px solid #ddd',
             borderRadius: '10px',
             padding: '24px',
             backgroundColor: '#fff',
             overflowY: 'auto',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            marginLeft: 'auto', // Align document to the right
+            transition: 'width 0.1s ease',
           }}
-          dangerouslySetInnerHTML={{ __html: selectedFileContent }}
+          contentEditable
+          suppressContentEditableWarning
+          dangerouslySetInnerHTML={{ __html: selectedFileContent || '<p style="color:gray; text-align:center;">No file selected</p>' }}
         />
       </Box>
     </Box>
