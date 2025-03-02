@@ -10,17 +10,18 @@ import {
   ListItemText,
 } from '@mui/material';
 import { Close as CloseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import mammoth from 'mammoth';
 
 const Filepage = () => {
-  const { fileName } = useParams();
+  const { project_name, fileName } = useParams();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState('');
-  const [resizeRatio, setResizeRatio] = useState(0.5); // 50% for each section
+  const [resizeRatio, setResizeRatio] = useState(0.5);
   const containerRef = useRef(null);
   const isDraggingRef = useRef(false);
+  const navigate = useNavigate();
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -30,6 +31,7 @@ const Filepage = () => {
           const content = await readDocxFile(file);
           setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
           setSelectedFileContent(content);
+          navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
         } else {
           alert('This file has already been uploaded.');
         }
@@ -48,54 +50,30 @@ const Filepage = () => {
   const handleFileSelect = async (file) => {
     const content = await readDocxFile(file);
     setSelectedFileContent(content);
+    navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
   };
 
   const handleFileRemove = (fileToRemove) => {
-    // Remove the file from the uploaded files list
     setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileToRemove.name));
-  
-    // Clear the selected file content if it's the currently displayed file
+
     if (selectedFileContent && fileToRemove.name === fileName) {
       setSelectedFileContent('');
+      navigate(`/dashboard/${encodeURIComponent(project_name)}`);
     }
   };
 
-  const handleResizeStart = (e) => {
-    e.preventDefault();
-    isDraggingRef.current = true;
-    document.addEventListener('mousemove', handleResize);
-    document.addEventListener('mouseup', handleResizeEnd);
-  };
-
-  const handleResize = (e) => {
-    if (!isDraggingRef.current || !containerRef.current) return;
-    
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const relativeX = e.clientX - containerRect.left;
-    const containerWidth = containerRect.width;
-    
-    let newRatio = relativeX / containerWidth;
-    newRatio = Math.max(0.1, Math.min(0.9, newRatio));
-    
-    setResizeRatio(newRatio);
-  };
-
-  const handleResizeEnd = () => {
-    isDraggingRef.current = false;
-    document.removeEventListener('mousemove', handleResize);
-    document.removeEventListener('mouseup', handleResizeEnd);
-  };
-
   useEffect(() => {
-    return () => {
-      document.removeEventListener('mousemove', handleResize);
-      document.removeEventListener('mouseup', handleResizeEnd);
-    };
-  }, []);
+    if (fileName) {
+      const selectedFile = uploadedFiles.find((file) => file.name === fileName);
+      if (selectedFile) {
+        readDocxFile(selectedFile).then(setSelectedFileContent);
+      }
+    }
+  }, [fileName, uploadedFiles]);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', width: '180vh'}}>
-      {/* Sidebar - Fixed width */}
+    <Box sx={{ display: 'flex', height: '100vh', width: '180vh' }}>
+      {/* Sidebar */}
       <Box
         sx={{
           width: '250px',
@@ -129,7 +107,7 @@ const Filepage = () => {
               <ListItem key={index} disablePadding>
                 <ListItemButton>
                   <Link
-                    to={`/dashboard/${encodeURIComponent(file.name)}`}
+                    to={`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`}
                     style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
                     onClick={() => handleFileSelect(file)}
                   >
@@ -149,7 +127,7 @@ const Filepage = () => {
         </Stack>
       </Box>
 
-      {/* Main Content - Full Width */}
+      {/* Main Content */}
       <Box
         ref={containerRef}
         sx={{
@@ -185,35 +163,10 @@ const Filepage = () => {
           </Typography>
         </Box>
 
-        {/* Resizer Handle */}
-        <Box
-          sx={{
-            width: '12px',
-            cursor: 'col-resize',
-            backgroundColor: '#ddd',
-            borderRadius: '4px',
-            zIndex: 10,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            '&:hover': {
-              backgroundColor: '#bbb',
-            },
-            '&::after': {
-              content: '""',
-              height: '30px',
-              width: '4px',
-              backgroundColor: '#999',
-              borderRadius: '2px',
-            }
-          }}
-          onMouseDown={handleResizeStart}
-        />
-
         {/* Editable DOCX Preview */}
         <Box
           sx={{
-            width: `${(1 - resizeRatio) * 100}%`,  // Adjust width dynamically
+            width: `${(1 - resizeRatio) * 100}%`,
             border: '1px solid #ddd',
             borderRadius: '10px',
             padding: '24px',

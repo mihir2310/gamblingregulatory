@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Filepage from './pages/Filepage';
-import Version from './pages/Version';  // Import the new Version page
+import Version from './pages/Version';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -56,8 +56,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Login onLogin={handleLogin} />} />
-          <Route path="/dashboard/:fileName" element={<Filepage />} />
-          <Route path="/dashboard/:fileName/version" element={<Version />} /> {/* New route for Version */}
+          <Route path="/dashboard/:project_name" element={<Filepage />} />
+          <Route path="/dashboard/:project_name/:fileName" element={<Filepage />} />
+          <Route path="/dashboard/:project_name/:fileName/:version" element={<Version />} />
         </Routes>
       </Box>
     </Router>
