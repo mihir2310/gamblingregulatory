@@ -51,10 +51,11 @@ const Filepage = () => {
   };
 
   const handleFileRemove = (fileToRemove) => {
-    setUploadedFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileToRemove.name)
-    );
-    if (fileToRemove.name === fileName) {
+    // Remove the file from the uploaded files list
+    setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileToRemove.name));
+  
+    // Clear the selected file content if it's the currently displayed file
+    if (selectedFileContent && fileToRemove.name === fileName) {
       setSelectedFileContent('');
     }
   };
