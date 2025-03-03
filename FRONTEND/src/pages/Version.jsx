@@ -104,7 +104,7 @@ const Version = () => {
   }, [fileName, uploadedFiles]);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', width: '100%' }}>
+    <Box sx={{ display: 'flex', height: '100vh', width: '180vh' }}>
       {/* Sidebar - Fixed width */}
       <Box
         sx={{

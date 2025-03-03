@@ -73,10 +73,10 @@ const Filepage = () => {
 
     const containerRect = containerRef.current.getBoundingClientRect();
     const relativeX = e.clientX - containerRect.left;
-    const containerWidth = containerRect.width - 12;
+    const containerWidth = containerRect.width - 12; // Subtract resizer width
 
     let newRatio = relativeX / containerWidth;
-    newRatio = Math.max(0.02, Math.min(0.98, newRatio)); // Adjusted limits
+    newRatio = Math.max(0.02, Math.min(0.98, newRatio)); // Adjusted limits to avoid 0% or 100%
 
     setResizeRatio(newRatio);
   };
@@ -170,22 +170,6 @@ const Filepage = () => {
         }}
       >
         {/* Placeholder Box */}
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          sx={{
-            position: 'absolute',
-            top: 16,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 10,
-            textAlign: 'center',
-          }}
-        >
-
-        </Typography>
-
-        {/* Placeholder Box */}
         <Box
           sx={{
             width: `${resizeRatio * 100}%`,
@@ -234,7 +218,7 @@ const Filepage = () => {
         {/* Editable DOCX Preview */}
         <Box
           sx={{
-            flexGrow: 1,
+            width: `${(1 - resizeRatio) * 100}%`,
             border: '1px solid #ddd',
             borderRadius: '10px',
             padding: '24px',
@@ -242,6 +226,7 @@ const Filepage = () => {
             overflowY: 'auto',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
             marginLeft: '6px',
+            minWidth: '100px',
           }}
           contentEditable
           suppressContentEditableWarning
