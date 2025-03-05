@@ -18,10 +18,10 @@ function Home() {
     >
       <Container maxWidth="md">
         <Typography variant="h3" gutterBottom align="center">
-          Welcome to Alea - the AI-driven regulatory compliance platform for Sports Gambling/Betting
+          Welcome to Alea - the AI-driven regulatory compliance platform for Prediction Markets
         </Typography>
         <Typography variant="body1" align="center">
-          Use AI-powered tools to ensure compliance with gambling regulations seamlessly.
+          Use AI-powered tools to ensure compliance with market regulations seamlessly.
         </Typography>
       </Container>
     </Box>
