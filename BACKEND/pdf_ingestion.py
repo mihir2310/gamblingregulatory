@@ -53,5 +53,5 @@ def process_pdf(pdf_path):
     return chunks
 
 if __name__ == "__main__":
-    pdf_path = "./regulatory_docs/title1.pdf"  
+    pdf_path = "./regulatory_docs/Wire Act of 1961.pdf"  
     process_pdf(pdf_path)

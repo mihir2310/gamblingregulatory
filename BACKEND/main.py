@@ -13,21 +13,16 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Example Usage
 if __name__ == "__main__":
+    '''
+    Script workflow. 
 
-    legal_data = ''
+    HARD PART
+    1. First identify document name (UIGEA, Wire Act of 1961, etc.).
+    2. Identify Document Type (federal (U.S.), state) - Only ingesting federal documents for now.
+    3. First get properly formatted chunks (each chunk should be an individual statute).
 
-    # Example: Run this to create the FAISS index
-    create_faiss_index_from_legal_data(legal_data)
+    EASY PART
+    4. Generate FAISS Indices.
+    5. Insert into the faiss index pickle file/
 
-    # Example
-    query = "What are the gambling regulations in California for sports betting?"
-    results = query_faiss_index(query)
-
-    # Display the results
-    for result in results:
-        print(f"Market: {result['market_type']}")
-        print(f"Jurisdiction: {result['jurisdiction']}")
-        print(f"Law: {result['law']}")
-        print(f"Text: {result['text']}")
-        print(f"Distance: {result['distance']}")
-        print()
+    '''
