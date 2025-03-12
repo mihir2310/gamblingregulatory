@@ -4,7 +4,7 @@ import faiss
 import json
 import os
 from dotenv import load_dotenv
-from APIRequests import *
+from BACKEND.embedding_storage import *
 
 # Load API key from .env
 load_dotenv()

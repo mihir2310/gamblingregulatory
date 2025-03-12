@@ -1,4 +1,4 @@
-#!/Users/mihirsavkar/Desktop/gamblingregulatory/venv/bin/python3
+#!/Users/mihirsavkar/Desktop/gamblingregulatory/venv/bin/python3.13
 # -*- coding: utf-8 -*-
 import re
 import sys
