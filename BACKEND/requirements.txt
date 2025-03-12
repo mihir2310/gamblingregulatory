@@ -1,5 +1,5 @@
 openai
-pymupdf
+PyMuPDF
 PyPDF2
 python-dotenv
 tiktoken
@@ -8,4 +8,4 @@ flask-cors
 numpy
 scikit-learn
 faiss-cpu
-docx
+python-docx

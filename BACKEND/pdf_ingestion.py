@@ -1,4 +1,4 @@
-import fitz  # PyMuPDF
+import fitz  
 import tiktoken
 import json
 import os
@@ -46,5 +46,12 @@ def chunk_text(text, max_tokens=750):
 # Process PDF and return text chunks
 def process_pdf(pdf_path):
     text = extract_text_from_pdf(pdf_path)
-    return chunk_text(text)
+    chunks = chunk_text(text)
+    for i, chunk in enumerate(chunks):
+        print(f"Chunk {i+1}:\n{chunk}\n{'='*50}\n")
+    
+    return chunks
 
+if __name__ == "__main__":
+    pdf_path = "./regulatory_docs/title1.pdf"  
+    process_pdf(pdf_path)
