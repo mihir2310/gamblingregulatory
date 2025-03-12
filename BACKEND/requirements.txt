@@ -9,3 +9,4 @@ numpy
 scikit-learn
 faiss-cpu
 python-docx
+re
