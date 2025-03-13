@@ -1,10 +1,10 @@
 import faiss
-import numpy as np
 import json
 import os
 from datetime import datetime
 from openai import OpenAI
 from dotenv import load_dotenv
+import numpy as np
 from pdf_ingestion import process_pdf
 
 # Load API Key
@@ -34,7 +34,7 @@ def categorize_law(file_name):
         return "General"
 
 # Function to create FAISS index & JSON storage
-def create_faiss_index(pdf_files):
+def create_faiss_index(pdf_files, selected_chunks=None):
     dimension = 1536
     index = faiss.IndexFlatL2(dimension)
 
@@ -61,7 +61,10 @@ def create_faiss_index(pdf_files):
 
         text_chunks = process_pdf(pdf_path)
 
-        for chunk in text_chunks:
+        # If chunks are provided, use them; otherwise, use all chunks
+        chunks_to_process = selected_chunks if selected_chunks is not None else text_chunks
+
+        for chunk in chunks_to_process:
             embedding = np.array(get_embedding(chunk), dtype=np.float32)
             index.add(np.array([embedding]))  # Add to FAISS
 
@@ -85,4 +88,3 @@ def create_faiss_index(pdf_files):
         json.dump(legal_data, f, indent=2)
 
     print("FAISS index & structured JSON saved successfully.")
-

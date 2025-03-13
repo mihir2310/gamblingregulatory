@@ -1,14 +1,10 @@
-import openai
-import numpy as np
-import faiss
-import json
 import os
 from dotenv import load_dotenv
-from BACKEND.embedding_storage import *
+from embedding_storage import create_faiss_index  # Import the function from embedding_storage
+from pdf_ingestion import process_pdf  # Import the function from pdf_ingestion
 
-# Load API key from .env
+# Load environment variables
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 # Example Usage
@@ -26,3 +22,17 @@ if __name__ == "__main__":
     5. Insert into the faiss index pickle file/
 
     '''
+    pdf_file = "./regulatory_docs/dfs_federal_Wire Act of 1961.pdf"  # Replace with actual PDF file paths
+
+    text_chunks = process_pdf(pdf_file)
+
+    # Select chunks 10-15 (indexing starts at 0)
+    selected_chunks = text_chunks[10:16]  # This gets chunks 10-15 (index 9-14)
+
+    # Display the selected chunks
+    print("Displaying Chunks 10-15:")
+    for i, chunk in enumerate(selected_chunks, start=10):
+        print(f"Chunk {i}: {chunk}\n")
+
+    # Call function to create the FAISS index and store embeddings
+    create_faiss_index([pdf_file], selected_chunks)
