@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     EASY PART
     4. Generate FAISS Indices.
-    5. Insert into the faiss index pickle file/
+    5. Insert into the faiss index pickle file
 
     '''
     pdf_file = "./regulatory_docs/dfs_federal_Wire Act of 1961.pdf"  # Replace with actual PDF file paths
