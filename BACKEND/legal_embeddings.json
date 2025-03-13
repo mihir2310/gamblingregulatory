@@ -1,0 +1,42 @@
+{
+  "sportsbooks": {
+    "federal": [
+      {
+        "law_name": "Wire Act of 1961",
+        "category": "General",
+        "law_text": "(a) Whoever being engaged in the business of \nbetting or wagering knowingly uses a wire com-\nmunication facility for the transmission in \ninterstate or foreign commerce of bets or wagers \nor information assisting in the placing of bets or \nwagers on any sporting event or contest, or for \nthe transmission of a wire communication \nwhich entitles the recipient to receive money or \ncredit as a result of bets or wagers, or for infor-\nmation assisting in the placing of bets or wa-\ngers, shall be fined under this title or impris-\noned not more than two years, or both.",
+        "updated_on": "2025-03-13"
+      },
+      {
+        "law_name": "Wire Act of 1961",
+        "category": "General",
+        "law_text": "(b) Nothing in this section shall be construed \nto prevent the transmission in interstate or for-\neign commerce of information for use in news \nreporting of sporting events or contests, or for \nthe transmission of information assisting in the \nplacing of bets or wagers on a sporting event or \ncontest from a State or foreign country where \nbetting on that sporting event or contest is legal \ninto a State or foreign country in which such \nbetting is legal.",
+        "updated_on": "2025-03-13"
+      },
+      {
+        "law_name": "Wire Act of 1961",
+        "category": "General",
+        "law_text": "(c) Nothing contained in this section shall cre-\nate immunity from criminal prosecution under \nany laws of any State.",
+        "updated_on": "2025-03-13"
+      },
+      {
+        "law_name": "Wire Act of 1961",
+        "category": "General",
+        "law_text": "(d) When any common carrier, subject to the \njurisdiction of the Federal Communications \nCommission, is notified in writing by a Federal, \nState, or local law enforcement agency, acting \nwithin its jurisdiction, that any facility fur-\nnished by it is being used or will be used for the \npurpose of transmitting or receiving gambling \ninformation in interstate or foreign commerce \nin violation of Federal, State or local law, it \nshall discontinue or refuse, the leasing, furnish-\ning, or maintaining of such facility, after rea-\nsonable notice to the subscriber, but no dam-\nages, penalty or forfeiture, civil or criminal, \nshall be found against any common carrier for \nany act done in compliance with any notice re-\nceived from a law enforcement agency. Nothing \nin this section shall be deemed to prejudice the \nright of any person affected thereby to secure an \nappropriate determination, as otherwise pro-\nvided by law, in a Federal court or in a State or \nlocal tribunal or agency, that such facility \nshould not be discontinued or removed, or \nshould be restored.",
+        "updated_on": "2025-03-13"
+      },
+      {
+        "law_name": "Wire Act of 1961",
+        "category": "General",
+        "law_text": "(e) As used in this section, the term \u2018\u2018State\u2019\u2019 \nmeans a State of the United States, the District \nof Columbia, the Commonwealth of Puerto Rico, \nor a commonwealth, territory or possession of \nthe United States. \n(Added Pub. L. 87\u2013216, \u00a7 2, Sept. 13, 1961, 75 Stat. \n491; amended Pub. L. 100\u2013690, title VII, \u00a7 7024, \nNov. 18, 1988, 102 Stat. 4397; Pub. L. 101\u2013647, title \nXII, \u00a7 1205(g), Nov. 29, 1990, 104 Stat. 4831; Pub. L. \n103\u2013322, title XXXIII, \u00a7 330016(1)(L), Sept. 13, 1994, \n108 Stat. 2147.) \nAMENDMENTS \n1994\u2014Subsec.",
+        "updated_on": "2025-03-13"
+      },
+      {
+        "law_name": "Wire Act of 1961",
+        "category": "General",
+        "law_text": "(a). Pub. L. 103\u2013322 substituted \u2018\u2018fined \nunder this title\u2019\u2019 for \u2018\u2018fined not more than $10,000\u2019\u2019. \n1990\u2014Subsec.",
+        "updated_on": "2025-03-13"
+      }
+    ]
+  }
+}

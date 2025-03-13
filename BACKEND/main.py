@@ -22,7 +22,7 @@ if __name__ == "__main__":
     5. Insert into the faiss index pickle file
 
     '''
-    pdf_file = "./regulatory_docs/dfs_federal_Wire Act of 1961.pdf"  # Replace with actual PDF file paths
+    pdf_file = "./regulatory_docs/sportsbooks_federal_Wire Act of 1961.pdf"  # Replace with actual PDF file paths
 
     text_chunks = process_pdf(pdf_file)
 
