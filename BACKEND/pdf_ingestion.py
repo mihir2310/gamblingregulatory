@@ -20,10 +20,17 @@ def extract_text_from_txt(txt_path):
         text = file.read()
     return text
 
+# Extract law name from the file name without the .txt extension
+def extract_law_name_from_filename(txt_path):
+    file_name = os.path.basename(txt_path)  # Get the file name from the path
+    law_name = file_name.split('_')[2]  # Extract the third part (law name)
+    law_name = law_name.replace('.txt', '')  # Remove the .txt extension if present
+    return law_name
+
 # Split text into sections and subsections based on SEC. xxx. and SEC. xxx(a), SEC. xxx(b) patterns
-def chunk_text_by_section_and_subsection(text):
+def chunk_text_by_section_and_subsection(text, law_name):
     # Regex pattern for sections like SEC. 101., SEC. 102., etc. and subsections like SEC. 101(a), SEC. 101(b)
-    section_pattern = r'(SEC\.\s+\d+(\([\w\+\-]+\))?\.)'
+    section_pattern = r'(SEC\.\s+\d+(\([\w\+\-]+\))?\.)'  # Match sections and subsections
     chunks = []
     
     # Split text based on the section pattern
@@ -47,22 +54,27 @@ def chunk_text_by_section_and_subsection(text):
         
         # Only proceed if there's actual content in the section
         if section_header and section_body:
-            chunk = section_header + "\n" + section_body
-            chunks.append(chunk)
+            # Construct the chunk entry
+            law_entry = {
+                "law_name": law_name,
+                "category": section_header,  # Section header as the category
+                "law_text": section_body,  # The body of the section
+                "updated_on": "2025-03-13"  # Date of update
+            }
+            chunks.append(law_entry)
 
     return chunks
 
-# Process TXT file and return text chunks
+# Process TXT file and return structured text chunks
 def process_txt(txt_path):
     text = extract_text_from_txt(txt_path)
-    chunks = chunk_text_by_section_and_subsection(text)
+    law_name = extract_law_name_from_filename(txt_path)  # Get the law name from the file name
+    chunks = chunk_text_by_section_and_subsection(text, law_name)
     
-    # Print all chunks to the console
-    for i, chunk in enumerate(chunks):
-        print(f"Chunk {i+1}:\n{chunk}\n{'='*50}\n")
-    
-    print(f"Total Chunks Processed: {len(chunks)}")  # Show the number of chunks
-    
+    # Output the structured data in JSON format
+    print("\nStructured JSON Output:")
+    print(json.dumps({"sportsbooks": {"federal": chunks}}, indent=2))
+
     return chunks
 
 if __name__ == "__main__":
