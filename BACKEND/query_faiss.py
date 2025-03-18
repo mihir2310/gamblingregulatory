@@ -5,6 +5,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from faiss_index_builder import get_embedding  # Import from the correct location
 import os
+import json
 
 # Load API Key
 load_dotenv()
@@ -12,6 +13,9 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
 EMBEDDING_JSON_PATH = "legal_embeddings.json"
+# Load the legal data
+with open(EMBEDDING_JSON_PATH, "r") as f:
+    legal_data = json.load(f)
 
 # Load FAISS index & JSON file
 def query_faiss_index(query_text, market_type=None, state_or_federal=None, top_k=3):
@@ -74,3 +78,13 @@ def create_filtered_faiss_index(filtered_laws):
     filtered_index.add(embeddings)  # Add all filtered embeddings at once
 
     return filtered_index
+
+def GETRELEVANTLAWS(query, market_type, state_or_federal):
+    INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
+    EMBEDDING_JSON_PATH = "legal_embeddings.json"
+    
+    results = query_faiss_index(query, market_type=market_type, state_or_federal=state_or_federal)
+
+    for law, score in results:
+        print(f"Matched Law: {law['law_name']} (Category: {law['category']})")
+        print(f"Law Text: {law['law_text'][:300]}... (Score: {score})\n\n")
