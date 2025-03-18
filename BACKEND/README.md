@@ -1,6 +1,11 @@
 # Current Data Engineering workflow:
 
+---
+
 ## pdf_ingestion.py -> law_jsonbuilder.py -> faiss_index_builder.py -> query_faiss.py -> main.py (main.py runs the actual querying)
+
+---
+
 
 ### 1. pdf_ingestion.py
 Use pdf_ingestion.py is a file that parses a law document and generates an add-on json file called pdf_ingest_output.json which follows the same structure as legal_embeddings (legal_embeddings contains ALL the LAWS)
@@ -22,16 +27,18 @@ query_faiss.py actually searches from the embedded content to find laws most rel
 Run python /Users/mihirsavkar/Desktop/gamblingregulatory/BACKEND/query_faiss.py
 
 ### 5. main.py
-main.py currently only contains test queries which work decently well output I/O looks like:
+main.py currently only contains test queries which work decently well output.
 
-I -
+# I/O example in main:
+
+## Input -
 query = "We are conducting illegal sports betting across multiple states, state prosecution and grants us full immunity, full immunity."    
 market_type="sportsbooks"
 state_or_federal="federal"
 
 Function runs (GETRELEVANTLAWS).....
 
-O - 
+# Output - 
 Matched Law: Wire Act of 1961 (Category: General)
 Law Text: (c) Nothing contained in this section shall cre-
 ate immunity from criminal prosecution under 
@@ -55,4 +62,6 @@ seq.).
     (b) Nothing in this Act may be construed to preempt State law 
 prohibiting gambling.... (Score: 0.41592782735824585)
 
-Embedding, algorithm, and scripts for now are not bad to proceed with, now back to app-building.
+---
+
+Embedding, algorithm, and scripts for now are not bad to proceed with, now back to app-building...
