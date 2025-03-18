@@ -60,12 +60,14 @@ def process_txt(txt_path):
     text = extract_text_from_txt(txt_path)
     law_name = extract_law_name_from_filename(txt_path)
     structured_laws = chunk_text_by_section(text, law_name)
-    
-    output_json = {"sportsbooks": {"federal": structured_laws}}
+
+    market = txt_path.split('/')[-1].split('_')[0]
+    jurisdiction = txt_path.split('/')[-1].split('_')[1]
+    output_json = {market: {jurisdiction: structured_laws}}
     print(json.dumps(output_json, indent=2))
 
     return structured_laws
 
 if __name__ == "__main__":
-    txt_path = "./regulatory_docs/prediction-markets_federal_UIGEA.txt"
+    txt_path = "./regulatory_docs/dfs_federal_UIGEA.txt"
     process_txt(txt_path)

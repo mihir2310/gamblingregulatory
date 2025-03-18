@@ -1,38 +1,30 @@
 import os
 from dotenv import load_dotenv
-from embedding_storage import create_faiss_index  # Import the function from embedding_storage
-from pdf_ingestion import process_pdf  # Import the function from pdf_ingestion
+from BACKEND.law_jsonbuilder import create_faiss_index  # Import the function from embedding_storage
+from query_faiss import query_faiss_index  # Import query_faiss_index
 
 # Load environment variables
 load_dotenv()
 
+# Test query to check for Wire Act violation
+def test_query_wire_act():
+    # Your test query text (you can adjust this based on how your query matches violations)
+    query = "We allow sports betting across state borders using wire communication facilities."
 
-# Example Usage
+    # Specify the market type and jurisdiction to filter the laws
+    market_type = "sportsbetting"  # Assuming the law relates to sports betting
+    state_or_federal = "federal"  # The law is federal, so we use "Federal"
+
+    # Query the FAISS index
+    results = query_faiss_index(query, market_type=market_type, state_or_federal=state_or_federal, top_k=3)
+
+    # Print out the results
+    if results:
+        for text, score in results:
+            print(f"Matched Law: {text['law_name']} (Category: {text['category']})")
+            print(f"Law Text: {text['law_text'][:300]}... (Score: {score})")
+    else:
+        print("No matching laws found.")
+
 if __name__ == "__main__":
-    '''
-    Script workflow. 
-
-    HARD PART
-    1. First identify document name (UIGEA, Wire Act of 1961, etc.).
-    2. Identify Document Type (federal (U.S.), state) - Only ingesting federal documents for now.
-    3. First get properly formatted chunks (each chunk should be an individual statute).
-
-    EASY PART
-    4. Generate FAISS Indices.
-    5. Insert into the faiss index pickle file
-
-    '''
-    pdf_file = "./regulatory_docs/sportsbooks_federal_Wire Act of 1961.pdf"  # Replace with actual PDF file paths
-
-    text_chunks = process_pdf(pdf_file)
-
-    # Select chunks 10-15 (indexing starts at 0)
-    selected_chunks = text_chunks[10:16]  # This gets chunks 10-15 (index 9-14)
-
-    # Display the selected chunks
-    print("Displaying Chunks 10-15:")
-    for i, chunk in enumerate(selected_chunks, start=10):
-        print(f"Chunk {i}: {chunk}\n")
-
-    # Call function to create the FAISS index and store embeddings
-    create_faiss_index([pdf_file], selected_chunks)
+    test_query_wire_act()

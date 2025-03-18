@@ -3,50 +3,88 @@ import numpy as np
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
-from embedding_storage import get_embedding
+from faiss_index_builder import get_embedding  # Import from the correct location
+import os
 
 # Load API Key
 load_dotenv()
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-INDEX_PATH = "faiss_index"
+INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
 EMBEDDING_JSON_PATH = "legal_embeddings.json"
 
 # Load FAISS index & JSON file
 def query_faiss_index(query_text, market_type=None, state_or_federal=None, top_k=3):
-    index = faiss.read_index(INDEX_PATH)
+    # Pre-filter the laws based on market_type and state_or_federal
+    filtered_laws = filter_laws(legal_data, market_type, state_or_federal)
+    
+    # If no laws are found after filtering, return early
+    if not filtered_laws:
+        return []
 
-    with open(EMBEDDING_JSON_PATH, "r") as f:
-        legal_data = json.load(f)
-
+    # Generate the embedding for the query
     query_embedding = np.array(get_embedding(query_text), dtype=np.float32).reshape(1, -1)
-    distances, indices = index.search(query_embedding, top_k)
+
+    # Perform FAISS search on the filtered laws
+    filtered_index = create_filtered_faiss_index(filtered_laws)
+    distances, indices = filtered_index.search(query_embedding, top_k)
 
     results = []
     for i, idx in enumerate(indices[0]):
         if idx == -1:
             continue
 
-        # Search JSON for corresponding laws
-        for m_type, jurisdictions in legal_data.items():
-            if market_type and m_type != market_type:
-                continue
-
-            for jurisdiction, laws in jurisdictions.items():
-                if state_or_federal and jurisdiction != state_or_federal:
-                    continue
-
-                for law in laws:
-                    if query_text.lower() in law["law_text"].lower():
-                        results.append((law, distances[0][i]))
+        # Get the law from the filtered laws
+        law = filtered_laws[idx]
+        results.append((law, distances[0][i]))
 
     return results
 
-# Example query
-if __name__ == "__main__":
-    query = "What are the taxation laws for sports betting in Nevada?"
-    results = query_faiss_index(query, market_type="Sports_Gambling", state_or_federal="Nevada")
 
-    for text, score in results:
-        print(f"Matched Law: {text['law_name']} (Category: {text['category']})")
-        print(f"Law Text: {text['law_text'][:300]}... (Score: {score})")
+# Filter laws based on market_type and state_or_federal
+def filter_laws(legal_data, market_type, state_or_federal):
+    filtered_laws = []
+
+    for m_type, jurisdictions in legal_data.items():
+        if market_type and m_type != market_type:
+            continue  # Skip if market type doesn't match
+
+        for jurisdiction, laws in jurisdictions.items():
+            if state_or_federal and jurisdiction != state_or_federal:
+                continue  # Skip if jurisdiction doesn't match
+
+            filtered_laws.extend(laws)
+
+    return filtered_laws
+
+
+# Create FAISS index for filtered laws
+def create_filtered_faiss_index(filtered_laws):
+    dimension = 1536  # Embedding dimension size (for text-embedding-ada-002)
+    filtered_index = faiss.IndexFlatL2(dimension)
+
+    # Add embeddings for the filtered laws
+    embeddings = []
+    for law in filtered_laws:
+        law_text = law["law_text"]
+        embedding = np.array(get_embedding(law_text), dtype=np.float32)
+        embeddings.append(embedding)
+
+    embeddings = np.array(embeddings)
+    filtered_index.add(embeddings)  # Add all filtered embeddings at once
+
+    return filtered_index
+
+
+# Example query (can be used for testing, remove in production)
+if __name__ == "__main__":
+    # Load the legal data
+    with open(EMBEDDING_JSON_PATH, "r") as f:
+        legal_data = json.load(f)
+
+    query = "We are conducting illegal sports betting across multiple states, state prosecution and grants us full immunity, full immunity."    
+    results = query_faiss_index(query, market_type="sportsbooks", state_or_federal="federal")
+
+    for law, score in results:
+        print(f"Matched Law: {law['law_name']} (Category: {law['category']})")
+        print(f"Law Text: {law['law_text'][:300]}... (Score: {score})\n\n")
