@@ -1,30 +1,26 @@
 import os
 from dotenv import load_dotenv
-from BACKEND.law_jsonbuilder import create_faiss_index  # Import the function from embedding_storage
-from query_faiss import query_faiss_index  # Import query_faiss_index
+from query_faiss import query_faiss_index  
+import json
 
 # Load environment variables
 load_dotenv()
 
-# Test query to check for Wire Act violation
-def test_query_wire_act():
-    # Your test query text (you can adjust this based on how your query matches violations)
-    query = "We allow sports betting across state borders using wire communication facilities."
+def test_query():
+    INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
+    EMBEDDING_JSON_PATH = "legal_embeddings.json"
 
-    # Specify the market type and jurisdiction to filter the laws
-    market_type = "sportsbetting"  # Assuming the law relates to sports betting
-    state_or_federal = "federal"  # The law is federal, so we use "Federal"
+    # Load the legal data
+    with open(EMBEDDING_JSON_PATH, "r") as f:
+        legal_data = json.load(f)
 
-    # Query the FAISS index
-    results = query_faiss_index(query, market_type=market_type, state_or_federal=state_or_federal, top_k=3)
+    query = "We are conducting illegal sports betting across multiple states, state prosecution and grants us full immunity, full immunity."    
+    results = query_faiss_index(query, market_type="sportsbooks", state_or_federal="federal")
 
-    # Print out the results
-    if results:
-        for text, score in results:
-            print(f"Matched Law: {text['law_name']} (Category: {text['category']})")
-            print(f"Law Text: {text['law_text'][:300]}... (Score: {score})")
-    else:
-        print("No matching laws found.")
+    for law, score in results:
+        print(f"Matched Law: {law['law_name']} (Category: {law['category']})")
+        print(f"Law Text: {law['law_text'][:300]}... (Score: {score})\n\n")
+
 
 if __name__ == "__main__":
-    test_query_wire_act()
+    test_query()

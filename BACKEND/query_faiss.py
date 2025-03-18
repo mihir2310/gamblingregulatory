@@ -74,17 +74,3 @@ def create_filtered_faiss_index(filtered_laws):
     filtered_index.add(embeddings)  # Add all filtered embeddings at once
 
     return filtered_index
-
-
-# Example query (can be used for testing, remove in production)
-if __name__ == "__main__":
-    # Load the legal data
-    with open(EMBEDDING_JSON_PATH, "r") as f:
-        legal_data = json.load(f)
-
-    query = "We are conducting illegal sports betting across multiple states, state prosecution and grants us full immunity, full immunity."    
-    results = query_faiss_index(query, market_type="sportsbooks", state_or_federal="federal")
-
-    for law, score in results:
-        print(f"Matched Law: {law['law_name']} (Category: {law['category']})")
-        print(f"Law Text: {law['law_text'][:300]}... (Score: {score})\n\n")
