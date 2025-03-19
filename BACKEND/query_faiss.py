@@ -79,12 +79,29 @@ def create_filtered_faiss_index(filtered_laws):
 
     return filtered_index
 
+# Formats results into a nice JSON file
+def format_results(results):
+    formatted_results = []
+
+    for law, score in results:
+        formatted_results.append({
+            "Law Name": law["law_name"],
+            "Category": law["category"],
+            "Law Text": law["law_text"].replace('\n', ' ').strip(),
+            "Updated On": law["updated_on"],
+            "Score": float(score)  # Convert np.float32 to native float for JSON compatibility
+        })
+
+    return json.dumps(formatted_results, indent=2)  # Return a JSON string
+
 def GETRELEVANTLAWS(query, market_type, state_or_federal):
     INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
     EMBEDDING_JSON_PATH = "legal_embeddings.json"
     
+    # Get the search results from the FAISS query
     results = query_faiss_index(query, market_type=market_type, state_or_federal=state_or_federal)
 
-    for law, score in results:
-        print(f"Matched Law: {law['law_name']} (Category: {law['category']})")
-        print(f"Law Text: {law['law_text'][:300]}... (Score: {score})\n\n")
+    # Format the results into a JSON string
+    formatted_results = format_results(results)
+
+    return formatted_results
