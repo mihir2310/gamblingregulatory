@@ -1,0 +1,781 @@
+[Congressional Bills 109th Congress]
+[From the U.S. Government Publishing Office]
+[H.R. 4411 Placed on Calendar Senate (PCS)]
+
+
+                                                       Calendar No. 519
+109th CONGRESS
+  2d Session
+                                H. R. 4411
+
+
+_______________________________________________________________________
+
+
+                   IN THE SENATE OF THE UNITED STATES
+
+                             July 12, 2006
+
+                    Received and read the first time
+
+                             July 13, 2006
+
+            Read the second time and placed on the calendar
+
+_______________________________________________________________________
+
+                                 AN ACT
+
+
+ 
+ To prevent the use of certain payment instruments, credit cards, and 
+ fund transfers for unlawful Internet gambling, and for other purposes.
+
+    Be it enacted by the Senate and House of Representatives of the 
+United States of America in Congress assembled,
+
+SECTION 1. SHORT TITLE AND TABLE OF CONTENTS.
+
+    (a) Short Title.--This Act may be cited as the ``Internet Gambling 
+Prohibition and Enforcement Act''.
+    (b) Table of Contents.--The table of contents is as follows:
+
+Sec. 1. Short title and table of contents.
+             TITLE I--MODERNIZATION OF THE WIRE ACT OF 1961
+
+Sec. 101. Definitions.
+Sec. 102. Modification of existing prohibition.
+Sec. 103. Authorization of civil enforcement.
+Sec. 104. Authorization of appropriations.
+Sec. 105. Rules of construction.
+Sec. 106. Sense of Congress.
+  TITLE II--POLICIES AND PROCEDURES REQUIRED TO PREVENT PAYMENTS FOR 
+                           UNLAWFUL GAMBLING
+
+Sec. 201. Policies and procedures required to prevent payments for 
+                            unlawful gambling.
+Sec. 202. Technical and conforming amendment.
+    TITLE III--INTERNET GAMBLING IN OR THROUGH FOREIGN JURISDICTIONS
+
+Sec. 301. Internet gambling in or through foreign jurisdictions.
+
+             TITLE I--MODERNIZATION OF THE WIRE ACT OF 1961
+
+SEC. 101. DEFINITIONS.
+
+    Section 1081 of title 18, United States Code, is amended--
+            (1) by designating the five undesignated paragraphs that 
+        begin with ``The term'' as paragraphs (1) through (5), 
+        respectively;
+            (2) by amending paragraph (5), as so designated, to read as 
+        follows:
+            ``(5) The term `communication facility' means any and all 
+        instrumentalities, personnel, and services (among other things, 
+        the receipt, forwarding, or delivery of communications) used or 
+        useful in the transmission of writings, signs, pictures, and 
+        sounds of all kinds by aid of wire, cable, radio, or an 
+        electromagnetic, photoelectronic or photooptical system, or 
+        other like connection (whether fixed or mobile) between the 
+        points of origin and reception of such transmission.''; and
+            (3) by adding at the end the following:
+            ``(6) The term `bets or wagers'--
+                    ``(A) means the staking or risking by any person of 
+                something of value upon the outcome of a contest of 
+                others, a sporting event, or a game predominantly 
+                subject to chance, upon an agreement or understanding 
+                that the person or another person will receive 
+                something of value in the event of a certain outcome;
+                    ``(B) includes the purchase of a chance or 
+                opportunity to win a lottery or other prize (which 
+                opportunity to win is predominantly subject to chance);
+                    ``(C) includes any scheme of a type described in 
+                section 3702 of title 28; and
+                    ``(D) does not include--
+                            ``(i) any activity governed by the 
+                        securities laws (as that term is defined in 
+                        section 3(a)(47) of the Securities Exchange Act 
+                        of 1934) for the purchase or sale of securities 
+                        (as that term is defined in section 3(a)(10) of 
+                        that Act);
+                            ``(ii) any transaction conducted on or 
+                        subject to the rules of a registered entity or 
+                        exempt board of trade under the Commodity 
+                        Exchange Act;
+                            ``(iii) any over-the-counter derivative 
+                        instrument;
+                            ``(iv) any other transaction that--
+                                    ``(I) is excluded or exempt from 
+                                regulation under the Commodity Exchange 
+                                Act; or
+                                    ``(II) is exempt from State gaming 
+                                or bucket shop laws under section 12(e) 
+                                of the Commodity Exchange Act or 
+                                section 28(a) of the Securities 
+                                Exchange Act of 1934;
+                            ``(v) any contract of indemnity or 
+                        guarantee;
+                            ``(vi) any contract for insurance;
+                            ``(vii) any deposit or other transaction 
+                        with an insured depository institution;
+                            ``(viii) participation in any game or 
+                        contest in which participants do not stake or 
+                        risk anything of value other than--
+                                    ``(I) personal efforts of the 
+                                participants in playing the game or 
+                                contest or obtaining access to the 
+                                Internet; or
+                                    ``(II) points or credits that the 
+                                sponsor of the game or contest provides 
+                                to participants free of charge and that 
+                                can be used or redeemed only for 
+                                participation in games or contests 
+                                offered by the sponsor; or
+                            ``(ix) participation in any fantasy or 
+                        simulation sports game or educational game or 
+                        contest in which (if the game or contest 
+                        involves a team or teams) no fantasy or 
+                        simulation sports team is based on the current 
+                        membership of an actual team that is a member 
+                        of an amateur or professional sports 
+                        organization (as those terms are defined in 
+                        section 3701 of title 28) and that meets the 
+                        following conditions:
+                                    ``(I) All prizes and awards offered 
+                                to winning participants are established 
+                                and made known to the participants in 
+                                advance of the game or contest and 
+                                their value is not determined by the 
+                                number of participants or the amount of 
+                                any fees paid by those participants.
+                                    ``(II) All winning outcomes reflect 
+                                the relative knowledge and skill of the 
+                                participants and are determined 
+                                predominantly by accumulated 
+                                statistical results of the performance 
+                                of individuals (athletes in the case of 
+                                sports events) in multiple real-world 
+                                sporting or other events.
+                                    ``(III) No winning outcome is 
+                                based--
+                                            ``(aa) on the score, point-
+                                        spread, or any performance or 
+                                        performances of any single 
+                                        real-world team or any 
+                                        combination of such teams; or
+                                            ``(bb) solely on any single 
+                                        performance of an individual 
+                                        athlete in any single real-
+                                        world sporting or other event.
+            ``(7) The terms `credit', `creditor', `credit card', and 
+        `card issuer' have the same meanings as in section 103 of the 
+        Truth in Lending Act.
+            ``(8) The term `electronic fund transfer'--
+                    ``(A) has the same meaning as in section 903 of the 
+                Electronic Fund Transfer Act, except that such term 
+                includes transfers that would otherwise be excluded 
+                under section 903(6)(E) of that Act; and
+                    ``(B) includes any fund transfer covered by Article 
+                4A of the Uniform Commercial Code, as in effect in any 
+                State.
+            ``(9) The term `financial institution' has the same meaning 
+        as in section 903 of the Electronic Fund Transfer Act, except 
+        that such term does not include a casino, sports book, or other 
+        business at or through which bets or wagers may be placed or 
+        received.
+            ``(10) The term `financial transaction provider' has the 
+        same meaning as in section 5361 of title 31 (as added by title 
+        II of this Act).
+            ``(11) The term `foreign jurisdiction' means a jurisdiction 
+        of a foreign country or political subdivision thereof.
+            ``(12) The term `gambling business' means a business of 
+        betting or wagering.
+            ``(13) The term `information assisting in the placing of 
+        bets or wagers' means information knowingly transmitted by an 
+        individual in a gambling business that enables or facilitates a 
+        bet or wager and does not include--
+                    ``(A) any posting or reporting of any educational 
+                information on how to make a legal bet or wager or the 
+                nature of betting or wagering, as long as such posting 
+                or reporting does not solicit or provide information 
+                for the purpose of facilitating or enabling the placing 
+                or receipt of bets or wagers in a jurisdiction where 
+                such betting is illegal; or
+                    ``(B) advertising relating to betting or wagering 
+                in a jurisdiction where such betting or wagering is 
+                legal, as long as such advertising does not solicit or 
+                provide information for the purpose of facilitating or 
+                enabling the placing or receipt of bets or wagers in a 
+                jurisdiction where such betting is illegal.
+            ``(14) The term `insured depository institution'--
+                    ``(A) has the same meaning as in section 3 of the 
+                Federal Deposit Insurance Act; and
+                    ``(B) includes an insured credit union (as defined 
+                in section 101 of the Federal Credit Union Act).
+            ``(15) The term `interactive computer service' has the same 
+        meaning as in section 230(f) of the Communications Act of 1934.
+            ``(16) The terms `money transmitting business' and `money 
+        transmitting service' have the same meanings as in section 
+        5330(d) (determined without regard to any regulations 
+        prescribed by the Secretary thereunder).
+            ``(17) The terms `own or control' and to be `owned or 
+        controlled' include circumstances within the meaning of section 
+        2(a)(2) of the Bank Holding Company Act of 1956.
+            ``(18) The term `person' includes a government (including 
+        any governmental entity (as defined in section 3701(2) of title 
+        28)).
+            ``(19) The term `State' means a State of the United States, 
+        the District of Columbia, or a commonwealth, territory, or 
+        possession of the United States.
+            ``(20) The term `tribe' or `tribal' means an Indian tribe, 
+        as defined under section 4(5) of the Indian Gaming Regulatory 
+        Act of 1988).
+            ``(21) For purposes of Section 1085(b), the term `account' 
+        means--
+                    ``(A) the unpaid balance of money or its equivalent 
+                received or held by an insured depository institution 
+                in the usual course of business and for which it has 
+                given or is obligated to give credit, either 
+                conditionally or unconditionally, to an account, 
+                including interest credited, or which is evidenced by 
+                an instrument on which the depository institution is 
+                primarily liable; and
+                    ``(B) money received or held by an insured 
+                depository institution, or the credit given for money 
+                or its equivalent received or held by the insured 
+                depository institution in the usual course of business 
+                for a special or specific purpose, regardless of the 
+                legal relationships established thereby, including 
+                escrow funds, funds held as security for securities 
+                loaned by the depository institution, funds deposited 
+                as advance payment on subscriptions to United States 
+                Government securities, and funds held to meet its 
+                acceptances.''.
+
+SEC. 102. MODIFICATION OF EXISTING PROHIBITION.
+
+    Section 1084 of title 18, United States Code, is amended to read as 
+follows:
+``Sec. 1084. Use of a communication facility to transmit bets or 
+              wagers; criminal penalties
+    ``(a) Except as otherwise provided in this section, whoever, being 
+engaged in a gambling business, knowingly--
+            ``(1) uses a communication facility for the transmission in 
+        interstate or foreign commerce, within the special maritime and 
+        territorial jurisdiction of the United States, or to or from 
+        any place outside the jurisdiction of any nation with respect 
+        to any transmission to or from the United States, of--
+                    ``(A) bets or wagers;
+                    ``(B) information assisting in the placing of bets 
+                or wagers; or
+                    ``(C) a communication, which entitles the recipient 
+                to receive money or credit as a result of bets or 
+                wagers, or for information assisting in the placing of 
+                bets or wagers; or
+            ``(2) accepts, in connection with the transmission of a 
+        communication in interstate or foreign commerce, within the 
+        special maritime and territorial jurisdiction of the United 
+        States, or to or from any place outside the jurisdiction of any 
+        nation with respect to any transmission to or from the United 
+        States of bets or wagers or information assisting in the 
+        placing of bets or wagers--
+                    ``(A) credit, or the proceeds of credit, extended 
+                to or on behalf of another (including credit extended 
+                through the use of a credit card);
+                    ``(B) an electronic fund transfer or funds 
+                transmitted by or through a money transmitting 
+                business, or the proceeds of an electronic fund 
+                transfer or money transmitting service, from or on 
+                behalf of the other person;
+                    ``(C) any check, draft, or similar instrument which 
+                is drawn by or on behalf of the other person and is 
+                drawn on or payable through any financial institution; 
+                or
+                    ``(D) the proceeds of any other form of financial 
+                transaction as the Secretary of the Treasury and the 
+                Board of Governors of the Federal Reserve System may 
+                prescribe by regulation which involves a financial 
+                institution as a payor or financial intermediary on 
+                behalf of or for the benefit of the other person,
+shall be fined under this title or imprisoned not more than five years, 
+or both.
+    ``(b) Nothing in this section prohibits--
+            ``(1) the transmission of information assisting in the 
+        placing of bets or wagers for use in news reporting if such 
+        transmission does not solicit or provide information for the 
+        purpose of facilitating or enabling the placing or receipt of 
+        bets or wagers in a jurisdiction where such betting is illegal;
+            ``(2) the transmission of information assisting in the 
+        placing of bets or wagers from a State or foreign country where 
+        such betting or wagering is permitted under Federal, State, 
+        tribal, or local law into a State or foreign country in which 
+        such betting on the same event is permitted under Federal, 
+        State, tribal, or local law; or
+            ``(3) the interstate transmission of information relating 
+        to a State-specific lottery between a State or foreign country 
+        where such betting or wagering is permitted under Federal, 
+        State, tribal, or local law and an out-of-State data center for 
+        the purposes of assisting in the operation of such State-
+        specific lottery.
+    ``(c) Nothing in this section prohibits the use of a communication 
+facility for the transmission of bets or wagers or information 
+assisting in the placing of bets or wagers, if--
+            ``(1) at the time the transmission occurs, the individual 
+        or entity placing the bets or wagers or information assisting 
+        in the placing of bets or wagers, the gambling business, and, 
+        subject to section 1084(b)(3), any individual or entity acting 
+        in concert with a gambling business to process the bets or 
+        wagers are physically located in the same State, and for class 
+        II or class III gaming under the Indian Gaming Regulatory Act, 
+        are physically located on Indian lands within that State;
+            ``(2) the State or tribe has explicitly authorized such 
+        bets and wagers, the State or tribal law requires a secure and 
+        effective location and age verification system to assure 
+        compliance with age and location requirements, and the gambling 
+        business and any individual or entity acting in concert with a 
+        gambling business to process the bets or wagers complies with 
+        such law;
+            ``(3) the State has explicitly authorized and licensed the 
+        operation of the gambling business and any individual or entity 
+        acting in concert with a gambling business to process the bets 
+        and wagers within its borders or the tribe has explicitly 
+        authorized and licensed the operation of the gambling business 
+        and any individual or entity acting in concert with a gambling 
+        business to process the bets and wagers, on Indian lands within 
+        its jurisdiction;
+            ``(4) with respect to class II or class III gaming, the 
+        game and gambling business complies with the requirements of 
+        the Indian Gaming Regulatory Act; and
+            ``(5) with respect to class III gaming under the Indian 
+        Gaming Regulatory Act, the game is authorized under, and is 
+        conducted in accordance with, the respective Tribal-State 
+        compact of the Tribe having jurisdiction over the Indian lands 
+        where the individual or entity placing the bets or wagers or 
+        information assisting in the placing of bets or wagers, the 
+        gambling business, and any individual or entity acting in 
+        concert with a gambling business to process those bets or 
+        wagers are physically located, and such Tribal-State compact 
+        expressly provides that the game may be conducted using a 
+        communication facility to transmit bets or wagers or 
+        information assisting in the placing of bets or wagers.
+For purposes of this subsection, the intermediate routing of electronic 
+data constituting or containing all or part of a bet or wager, or all 
+or part of information assisting in the placing of bets or wagers, 
+shall not determine the location or locations in which a bet or wager 
+is transmitted, initiated, received or otherwise made; or from or to 
+which a bet or wager, or information assisting in the placing of bets 
+or wagers, is transmitted.
+    ``(d) Nothing in this section creates immunity from criminal 
+prosecution under any laws of any State or tribe.
+    ``(e) Nothing in this section authorizes activity that is 
+prohibited under chapter 178 of title 28, United States Code.
+    ``(f) When any common carrier, subject to the jurisdiction of the 
+Federal Communications Commission, is notified in writing by a Federal, 
+State, tribal, or local law enforcement agency, acting within its 
+jurisdiction, that any communication facility furnished by it is being 
+used or will be used by its subscriber for the purpose of transmitting 
+or receiving gambling information in interstate or foreign commerce, 
+within the special maritime and territorial jurisdiction of the United 
+States, or to or from any place outside the jurisdiction of any nation 
+with respect to any transmission to or from the United States in 
+violation of Federal, State, tribal, or local law, it shall discontinue 
+or refuse, the leasing, furnishing, or maintaining of such facility, 
+after reasonable notice to the subscriber, but no damages, penalty or 
+forfeiture, civil or criminal, shall be found against any common 
+carrier for any act done in compliance with any notice received from a 
+law enforcement agency. Nothing in this section shall be deemed to 
+prejudice the right of any person affected thereby to secure an 
+appropriate determination, as otherwise provided by law, in a Federal 
+court or in a State, tribal, or local tribunal or agency, that such 
+facility should not be discontinued or removed, or should be 
+restored.''.
+
+SEC. 103. AUTHORIZATION OF CIVIL ENFORCEMENT.
+
+    Chapter 50 of title 18, United States Code, is amended by adding at 
+the end the following new section:
+``Sec. 1085. Civil remedies
+    ``(a) Jurisdiction.--The district courts of the United States (in 
+addition to any other remedies under current law) shall have original 
+and exclusive jurisdiction to prevent and restrain violations of 
+section 1084 by issuing appropriate orders in accordance with this 
+section, regardless of whether a prosecution has been initiated under 
+section 1084.
+    ``(b) Proceedings.--
+            ``(1) The United States may institute proceedings under 
+        this section--
+                    ``(A) to obtain injunctive or declarative relief, 
+                including but not limited to a temporary restraining 
+                order and a preliminary injunction, against any person 
+                (other than a financial transaction provider) to 
+                prevent or restrain a violation or a threatened 
+                violation of section 1084;
+                    ``(B) in the case of an insured depository 
+                institution that is a financial transaction provider, 
+                to--
+                            ``(i) restrain an account maintained at 
+                        such insured depository institution if such 
+                        account is--
+                                    ``(I) owned or controlled by a 
+                                gambling business; and
+                                    ``(II) includes proceeds of, or is 
+                                used to facilitate a violation of, 
+                                section 1084; or
+                            ``(ii) seize funds in an account described 
+                        in subparagraph (i) if such funds--
+                                    ``(I) are owned or controlled by a 
+                                gambling business; and
+                                    ``(II) constitute the proceeds of, 
+                                were derived from, or facilitated, a 
+                                violation of section 1084.
+                    ``(C) The limitation in subparagraph (A) shall not 
+                apply if the financial transaction provider is a 
+                gambling business within the meaning of section 
+                1081(12), in which case such financial transaction 
+                provider shall be subject to the enforcement provisions 
+                under subparagraph (A).
+            ``(2) The attorney general (or other appropriate State 
+        official) of a State in which a communication in violation of 
+        section 1084 allegedly has been or will be initiated or 
+        received may institute proceedings under this section to obtain 
+        injunctive or declarative relief to prevent or restrain the 
+        violation or threatened violation. Upon application of the 
+        attorney general (or other appropriate State official) of an 
+        affected State under this paragraph, the district court may 
+        enter a temporary restraining order, a preliminary injunction, 
+        an injunction, or declaratory relief against any person (other 
+        than a financial transaction provider) to prevent or restrain a 
+        violation or threatened violation of section 1084, in 
+        accordance with rule 65 of the Federal Rules of Civil 
+        Procedure.
+            ``(3) Notwithstanding paragraphs (1) and (2), for a 
+        communication in violation of section 1084 that allegedly has 
+        been or will be initiated or received on Indian lands (as that 
+        term is defined in section 4 of the Indian Gaming Regulatory 
+        Act)--
+                    ``(A) the United States shall have the enforcement 
+                authority provided under paragraph (1);
+                    ``(B) the enforcement authorities specified in an 
+                applicable Tribal-State compact negotiated under 
+                section 11 of the Indian Gaming Regulatory Act (25 
+                U.S.C. 2710) shall be carried out in accordance with 
+                that compact; and
+                    ``(C) if there is no applicable Tribal-State 
+                compact, an appropriate tribal official may institute 
+                proceedings in the same manner as an attorney general 
+                of a State.
+        No provision of this section shall be construed as altering, 
+        superseding, or otherwise affecting the application of the 
+        Indian Gaming Regulatory Act.
+            ``(4) Notwithstanding paragraph (3), no relief shall be 
+        granted under this section against a financial transaction 
+        provider except as provided in paragraph (1).
+    ``(c) No damages, penalty, or forfeiture, civil or criminal, shall 
+be found against any person or entity for any act done in compliance 
+with any notice received from a law enforcement agency.
+    ``(d) Relief granted under this section against an interactive 
+computer service (as defined in section 230(f) of the Communications 
+Act of 1934) shall--
+            ``(1) be limited to the removal of, or disabling of access 
+        to, an online site violating section 1084, or a hypertext link 
+        to an online site violating such section, that resides on a 
+        computer server that such service controls or operates; except 
+        this limitation shall not apply if the service is violating 
+        section 1084 or is in active concert with a person who is 
+        violating section 1084 and receives actual notice of the 
+        relief;
+            ``(2) be available only after notice to the interactive 
+        computer service and an opportunity for the service to appear 
+        are provided;
+            ``(3) not impose any obligation on an interactive computer 
+        service to monitor its service or to affirmatively seek facts 
+        indicating activity violating section 1084;
+            ``(4) specify the interactive computer service to which it 
+        applies; and
+            ``(5) specifically identify the location of the online site 
+        or hypertext link to be removed or access to which is to be 
+        disabled.''.
+
+SEC. 104. AUTHORIZATION OF APPROPRIATIONS.
+
+    In addition to any other sums authorized to be appropriated for 
+this purpose, there are authorized to be appropriated to the Department 
+of Justice for each of fiscal years 2007 through 2010 $10,000,000 for 
+investigations and prosecutions of violations of section 1084 of title 
+18, United States Code.
+
+SEC. 105. RULES OF CONSTRUCTION.
+
+    (a) Nothing in this Act may be construed to prohibit any activity 
+that is allowed under Public Law 95-515 as amended (15 U.S.C. 3001 et 
+seq.).
+    (b) Nothing in this Act may be construed to preempt State law 
+prohibiting gambling.
+
+SEC. 106. SENSE OF CONGRESS.
+
+    It is the sense of Congress that this Act does not change which 
+activities related to horse racing may or may not be allowed under 
+Federal law. Section 105 is intended to address concerns that this Act 
+could have the effect of changing the existing relationship between the 
+Interstate Horseracing Act (15 U.S.C. 3001 et seq.), and other Federal 
+statutes that were in effect at the time of this Act's consideration; 
+this Act is not intended to change that relationship; and this Act is 
+not intended to resolve any existing disagreements over how to 
+interpret the relationship between the Interstate Horseracing Act and 
+other Federal statutes.
+
+  TITLE II--POLICIES AND PROCEDURES REQUIRED TO PREVENT PAYMENTS FOR 
+                           UNLAWFUL GAMBLING
+
+SEC. 201. POLICIES AND PROCEDURES REQUIRED TO PREVENT PAYMENTS FOR 
+              UNLAWFUL GAMBLING.
+
+    Chapter 53 of title 31, United States Code, is amended by adding at 
+the end the following new subchapter:
+
+ ``SUBCHAPTER IV--POLICIES AND PROCEDURES REQUIRED TO PREVENT PAYMENTS 
+                         FOR UNLAWFUL GAMBLING
+
+``Sec. 5361. Definitions
+    ``For purposes of this subchapter, the following definitions shall 
+apply:
+            ``(1) Credit; creditor; credit card; and card issuer.--The 
+        terms `credit', `creditor', `credit card', and `card issuer' 
+        have the same meanings as in section 103 of the Truth in 
+        Lending Act.
+            ``(2) Designated payment system.--The term `designated 
+        payment system' means any system utilized by a financial 
+        transaction provider that the Secretary and the Board of 
+        Governors of the Federal Reserve System, in consultation with 
+        the Attorney General, jointly determine, by regulation or 
+        order, could be utilized in connection with, or to facilitate, 
+        any restricted transaction.
+            ``(3) Electronic fund transfer.--The term `electronic fund 
+        transfer'--
+                    ``(A) has the same meaning as in section 903 of the 
+                Electronic Fund Transfer Act, except that such term 
+                includes transfers that would otherwise be excluded 
+                under section 903(6)(E) of that Act; and
+                    ``(B) includes any fund transfer covered by Article 
+                4A of the Uniform Commercial Code, as in effect in any 
+                State.
+            ``(4) Financial institution.--The term `financial 
+        institution' has the same meaning as in section 903 of the 
+        Electronic Fund Transfer Act, except that such term does not 
+        include a casino, sports book, or other business at or through 
+        which bets or wagers may be placed or received.
+            ``(5) Financial transaction provider.--The term `financial 
+        transaction provider' means a creditor, credit card issuer, 
+        financial institution, operator of a terminal at which an 
+        electronic fund transfer may be initiated, money transmitting 
+        business, or international, national, regional, or local 
+        payment network utilized to effect a credit transaction, 
+        electronic fund transfer, stored value product transaction, or 
+        money transmitting service, or a participant in such network, 
+        or other participant in a designated payment system.
+            ``(6) Insured depository institution.--The term `insured 
+        depository institution'--
+                    ``(A) has the same meaning as in section 3 of the 
+                Federal Deposit Insurance Act; and
+                    ``(B) includes an insured credit union (as defined 
+                in section 101 of the Federal Credit Union Act).
+            ``(7) Money transmitting business and money transmitting 
+        service.--The terms `money transmitting business' and `money 
+        transmitting service' have the same meanings as in section 
+        5330(d) (determined without regard to any regulations 
+        prescribed by the Secretary thereunder).
+            ``(8) Restricted transaction.--The term `restricted 
+        transaction' means any transaction or transmittal involving any 
+        credit, funds, instrument, or proceeds described in any 
+        paragraph of section 5362 which the recipient is prohibited 
+        from accepting under such section.
+            ``(9) Secretary.--The term `Secretary' means the Secretary 
+        of the Treasury.
+            ``(10) Unlawful gambling.--
+                    ``(A) In general.--The term `unlawful gambling' 
+                means to place, receive, or otherwise knowingly 
+                transmit a bet or wager by any means which involves the 
+                use of a communication facility where such bet or wager 
+                is unlawful under any applicable Federal or State law 
+                in the State or tribal lands in which the bet or wager 
+                is initiated, received, or otherwise made.
+                    ``(B) Exclusion of certain authorized 
+                transactions.--The term `unlawful gambling' does not 
+                include any intrastate or intratribal transactions 
+                authorized under section 1084(c) of title 18, United 
+                States Code.
+                    ``(C) Intermediate routing.--With respect to 
+                section 5362, the intermediate routing of electronic 
+                data shall not determine the location or locations in 
+                which a bet or wager is initiated, received, or 
+                otherwise made.
+            ``(11) Other terms.--The terms `bet or wager', 
+        `communication facility', `gambling business', `own and 
+        control', `person', `State', and `tribal' have the same 
+        meanings as in section 1081 of title 18.
+``Sec. 5362. Prohibition on acceptance of any financial instrument for 
+              unlawful gambling
+    ``No person engaged in a gambling business may knowingly accept, in 
+connection with the participation of another person in unlawful 
+gambling--
+            ``(1) credit, or the proceeds of credit, extended to or on 
+        behalf of such other person (including credit extended through 
+        the use of a credit card);
+            ``(2) an electronic fund transfer, or funds transmitted by 
+        or through a money transmitting business, or the proceeds of an 
+        electronic fund transfer or money transmitting service, from or 
+        on behalf of such other person;
+            ``(3) any check, draft, or similar instrument which is 
+        drawn by or on behalf of such other person and is drawn on or 
+        payable at or through any financial institution; or
+            ``(4) the proceeds of any other form of financial 
+        transaction, as the Secretary and the Board of Governors of the 
+        Federal Reserve System may jointly prescribe by regulation, 
+        which involves a financial institution as a payor or financial 
+        intermediary on behalf of or for the benefit of such other 
+        person.
+``Sec. 5363. Policies and procedures to identify and prevent restricted 
+              transactions
+    ``(a) Regulations.--Before the end of the 270-day period beginning 
+on the date of the enactment of this subchapter, the Secretary and the 
+Board of Governors of the Federal Reserve System, in consultation with 
+the Attorney General, shall prescribe regulations (which the Secretary 
+and the Board jointly determine to be appropriate) requiring each 
+designated payment system, and all participants therein, to identify 
+and block or otherwise prevent or prohibit restricted transactions 
+through the establishment of policies and procedures reasonably 
+designed to identify and block or otherwise prevent or prohibit the 
+acceptance of restricted transactions in any of the following ways:
+            ``(1) The establishment of policies and procedures that--
+                    ``(A) allow the payment system and any person 
+                involved in the payment system to identify restricted 
+                transactions by means of codes in authorization 
+                messages or by other means; and
+                    ``(B) block restricted transactions identified as a 
+                result of the policies and procedures developed 
+                pursuant to subparagraph (A).
+            ``(2) The establishment of policies and procedures that 
+        prevent or prohibit the acceptance of the products or services 
+        of the payment system in connection with a restricted 
+        transaction.
+    ``(b) Requirements for Policies and Procedures.--In prescribing 
+regulations under subsection (a), the Secretary and the Board of 
+Governors of the Federal Reserve System shall--
+            ``(1) identify types of policies and procedures, including 
+        nonexclusive examples, which would be deemed, as applicable, to 
+        be reasonably designed to identify and block or otherwise 
+        prevent or prohibit the acceptance of the products or services 
+        with respect to each type of restricted transaction;
+            ``(2) to the extent practical, permit any participant in a 
+        payment system to choose among alternative means of identifying 
+        and blocking, or otherwise preventing or prohibiting the 
+        acceptance of the products or services of the payment system or 
+        participant in connection with, restricted transactions; and
+            ``(3) consider exempting certain restricted transactions or 
+        designated payment systems from any requirement imposed under 
+        such regulations, if the Secretary and the Board jointly find 
+        that it is not reasonably practical to identify and block, or 
+        otherwise prevent or prohibit the acceptance of, such 
+        transactions.
+    ``(c) Compliance With Payment System Policies and Procedures.--A 
+financial transaction provider shall be considered to be in compliance 
+with the regulations prescribed under subsection (a), if--
+            ``(1) such person relies on and complies with the policies 
+        and procedures of a designated payment system of which it is a 
+        member or participant to--
+                    ``(A) identify and block restricted transactions; 
+                or
+                    ``(B) otherwise prevent or prohibit the acceptance 
+                of the products or services of the payment system, 
+                member, or participant in connection with restricted 
+                transactions; and
+            ``(2) such policies and procedures of the designated 
+        payment system comply with the requirements of regulations 
+        prescribed under subsection (a).
+    ``(d) No Liability for Blocking or Refusing to Honor Restricted 
+Transactions.--A person that identifies and blocks a transaction, 
+prevents or prohibits the acceptance of its products or services in 
+connection with a transaction, or otherwise refuses to honor a 
+transaction--
+            ``(1) that is a restricted transaction;
+            ``(2) that such person reasonably believes to be a 
+        restricted transaction; or
+            ``(3) as a designated payment system or a member of a 
+        designated payment system in reliance on the policies and 
+        procedures of the payment system, in an effort to comply with 
+        regulations prescribed under subsection (a),
+shall not be liable to any party for such action.
+    ``(e) Regulatory Enforcement.--The requirements of this subchapter 
+shall be enforced exclusively by--
+            ``(1) the Federal functional regulators, with respect to 
+        the designated payment systems and financial transaction 
+        providers subject to the respective jurisdiction of such 
+        regulators under section 505(a) of the Gramm-Leach-Bliley Act 
+        and section 5g of the Commodities Exchange Act; and
+            ``(2) the Federal Trade Commission, with respect to 
+        designated payment systems and financial transaction providers 
+        not otherwise subject to the jurisdiction of any Federal 
+        functional regulators (including the Commission) as described 
+        in paragraph (1).''.
+
+SEC. 202. TECHNICAL AND CONFORMING AMENDMENT.
+
+    The table of sections for chapter 53 of title 31, United States 
+Code, is amended by adding at the end the following:
+ ``subchapter iv--policies and procedures required to prevent payments 
+                         for unlawful gambling
+``5361. Definitions.
+``5362. Prohibition on acceptance of any financial instrument for 
+                            unlawful gambling.
+``5363. Policies and procedures to identify and prevent restricted 
+                            transactions.''.
+
+    TITLE III--INTERNET GAMBLING IN OR THROUGH FOREIGN JURISDICTIONS
+
+SEC. 301. INTERNET GAMBLING IN OR THROUGH FOREIGN JURISDICTIONS.
+
+    (a) In General.--In deliberations between the United States 
+Government and any other country on money laundering, corruption, and 
+crime issues, the United States Government should--
+            (1) encourage cooperation by foreign governments and 
+        relevant international fora in identifying whether Internet 
+        gambling operations are being used for money laundering, 
+        corruption, or other crimes;
+            (2) advance policies that promote the cooperation of 
+        foreign governments, through information sharing or other 
+        measures, in the enforcement of this Act; and
+            (3) encourage the Financial Action Task Force on Money 
+        Laundering, in its annual report on money laundering 
+        typologies, to study the extent to which Internet gambling 
+        operations are being used for money laundering purposes.
+    (b) Report Required.--The Secretary of the Treasury shall submit an 
+annual report to the Congress on any deliberations between the United 
+States and other countries on issues relating to Internet gambling.
+
+            Passed the House of Representatives July 11, 2006.
+
+            Attest:
+
+                                                 KAREN L. HAAS,
+
+                                                                 Clerk.
+                                                       Calendar No. 519
+
+109th CONGRESS
+
+  2d Session
+
+                               H. R. 4411
+
+_______________________________________________________________________
+
+                                 AN ACT
+
+ To prevent the use of certain payment instruments, credit cards, and 
+ fund transfers for unlawful Internet gambling, and for other purposes.
+
+_______________________________________________________________________
+
+                             July 13, 2006
+
+            Read the second time and placed on the calendar
