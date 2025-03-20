@@ -24,20 +24,36 @@ const Filepage = () => {
   const navigate = useNavigate();
 
   const handleFileUpload = async (event) => {
+    const market_type = "sportsbooks";  // Hardcoded for now
+    const state_or_federal = "federal"; // Hardcoded for now
+
     const file = event.target.files[0];
     if (file) {
-      if (file.name.endsWith('.docx')) {
-        if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
-          const content = await readDocxFile(file);
-          setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
-          setSelectedFileContent(content);
-          navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
+        if (file.name.endsWith('.docx')) {
+            if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
+                const content = await readDocxFile(file);
+
+                // Send file content and compliance details to the backend
+                await fetch('/api/scan-doc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fileName: file.name,
+                        fileContent: content,
+                        market_type,
+                        state_or_federal
+                    })
+                });
+
+                setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
+                setSelectedFileContent(content);
+                navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
+            } else {
+                alert('This file has already been uploaded.');
+            }
         } else {
-          alert('This file has already been uploaded.');
+            alert('Please upload a .docx file.');
         }
-      } else {
-        alert('Please upload a .docx file.');
-      }
     }
   };
 
