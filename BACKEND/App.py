@@ -12,7 +12,10 @@ sys.path.append(parent_dir)
 
 # Import from AI_ALGORITHMS after adding the path
 from AI_ALGORITHMS.query_faiss import GETRELEVANTLAWS
-from AI_ALGORITHMS.status_checker import detect_violation  # Not yet used
+from AI_ALGORITHMS.status_checker import detect_violation  
+
+from BACKEND.file_processor import process_uploaded_file
+
 
 # Load environment variables
 load_dotenv()

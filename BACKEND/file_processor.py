@@ -25,3 +25,6 @@ def process_uploaded_file(file):
     print("Terms extracted:", terms)
 
     return terms
+
+if __name__ == "main":
+    process_uploaded_file(file)
