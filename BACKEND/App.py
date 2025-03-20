@@ -12,7 +12,7 @@ sys.path.append(parent_dir)
 
 # Import from AI_ALGORITHMS after adding the path
 from AI_ALGORITHMS.query_faiss import GETRELEVANTLAWS
-from AI_ALGORITHMS.status_checker import detect_violation
+from AI_ALGORITHMS.status_checker import detect_violation  # Not yet used
 
 # Load environment variables
 load_dotenv()
@@ -52,12 +52,18 @@ def scan_doc():
 
             # Get relevant laws from AI algorithms
             relevant_laws = GETRELEVANTLAWS(term, market_type, state_or_federal)
+            print(f"Relevant laws for '{term}':", relevant_laws)  # Added Debugging
 
-            # Detect violations using AI
+            # Properly parse the relevant_laws before passing it to detect_violation
+            if isinstance(relevant_laws, str):
+                relevant_laws = json.loads(relevant_laws)
+
+            # Temporarily skip violation detection
             violation_results = detect_violation(term, relevant_laws)
 
             results.append({
                 "term": term,
+                "relevant_laws": relevant_laws,  # Updated to show retrieved laws only
                 "violations": violation_results
             })
 
