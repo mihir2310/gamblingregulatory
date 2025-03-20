@@ -4,7 +4,7 @@ from query_faiss import GETRELEVANTLAWS
 from status_checker import detect_violation
 import json
 
-with open("/Users/mihirsavkar/Desktop/gamblingregulatory/BACKEND/query_results.json", "r") as file:
+with open("/Users/mihirsavkar/Desktop/gamblingregulatory/AI_ALGORITHMS/query_results.json", "r") as file:
     res = json.load(file)
 
 # Load environment variables
