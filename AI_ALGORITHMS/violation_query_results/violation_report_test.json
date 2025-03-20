@@ -5,7 +5,7 @@
         "Law Text": "(c) Nothing contained in this section shall cre- ate immunity from criminal prosecution under  any laws of any State.",
         "Violation": "Yes",
         "Explanation": ", the user's statement violates the law. The law clearly states that nothing in the section creates immunity from criminal prosecution under any state laws, while the user's statement claims the opposite.",
-        "Updated On": "2025-03-19",
+        "Updated On": "2025-03-20",
         "Score": 0.08322206884622574
     },
     {
@@ -13,8 +13,8 @@
         "Category": "SEC. 105. RULES OF CONSTRUCTION.",
         "Law Text": "(a) Nothing in this Act may be construed to prohibit any activity  that is allowed under Public Law 95-515 as amended (15 U.S.C. 3001 et  seq.).     (b) Nothing in this Act may be construed to preempt State law  prohibiting gambling.",
         "Violation": "No",
-        "Explanation": ". The user's statement does not violate the law. The user is simply stating that the provisions in the section provide immunity from criminal prosecution under any state laws, which is not in conflict with the law cited.",
-        "Updated On": "2025-03-19",
+        "Explanation": ". \n\nThe user's statement does not violate the law. The user is simply stating that the provisions in the section provide immunity from criminal prosecution under any state laws, which is not explicitly prohibited by the law cited.",
+        "Updated On": "2025-03-20",
         "Score": 0.33661597967147827
     },
     {
@@ -22,8 +22,8 @@
         "Category": "General",
         "Law Text": "(b) Nothing in this section shall be construed  to prevent the transmission in interstate or for- eign commerce of information for use in news  reporting of sporting events or contests, or for  the transmission of information assisting in the  placing of bets or wagers on a sporting event or  contest from a State or foreign country where  betting on that sporting event or contest is legal  into a State or foreign country in which such  betting is legal.",
         "Violation": "No",
-        "Explanation": ". The user's statement does not violate the law. The user is simply stating that the section provides immunity from criminal prosecution under any state laws, which is not in conflict with the law provided.",
-        "Updated On": "2025-03-19",
+        "Explanation": ". The user's statement does not violate the law. The user is simply stating that the section provides immunity from criminal prosecution under any state laws, which is not in conflict with the law itself.",
+        "Updated On": "2025-03-20",
         "Score": 0.33713608980178833
     }
 ]
