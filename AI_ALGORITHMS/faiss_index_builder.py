@@ -13,7 +13,7 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Define paths
 LEGAL_EMBEDDINGS_PATH = "legal_embeddings.json"
-FAISS_DIRECTORY = "./faiss_indexes/"  # Directory for FAISS index files
+FAISS_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__), "../AI_ALGORITHMS/faiss_indexes"))
 
 # Ensure FAISS directory exists
 if not os.path.exists(FAISS_DIRECTORY):
