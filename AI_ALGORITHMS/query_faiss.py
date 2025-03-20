@@ -3,7 +3,7 @@ import numpy as np
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
-from faiss_index_builder import get_embedding  # Import from the correct location
+from .faiss_index_builder import get_embedding  # Import from the correct location
 import os
 import json
 
@@ -12,7 +12,8 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
-EMBEDDING_JSON_PATH = "legal_embeddings.json"
+EMBEDDING_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal_embeddings.json")
+
 # Load the legal data
 with open(EMBEDDING_JSON_PATH, "r") as f:
     legal_data = json.load(f)
@@ -94,6 +95,7 @@ def format_results(results):
 
     return json.dumps(formatted_results, indent=2)  # Return a JSON string
 
+# Takes in the specific user-inputted t&c term, the market_type, and state/federal_status
 def GETRELEVANTLAWS(query, market_type, state_or_federal):
     INDEX_PATH = "faiss_indexes/"  # Adjusted to faiss_indexes directory
     EMBEDDING_JSON_PATH = "legal_embeddings.json"
