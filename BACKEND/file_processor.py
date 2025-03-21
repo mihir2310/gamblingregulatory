@@ -1,9 +1,6 @@
 import mammoth
 import os
 from bs4 import BeautifulSoup
-from pdf2docx import Converter
-import tempfile
-
 
 def convert_pdf_to_docx(pdf_path):
     """
@@ -15,22 +12,14 @@ def convert_pdf_to_docx(pdf_path):
     cv.close()
     return docx_path
 
-
 def process_uploaded_file(file_path):
     """
-    Process the uploaded file (DOCX or PDF), convert to DOCX if it's a PDF, 
-    convert to HTML, and extract terms, excluding non-relevant content.
+    Process the uploaded .docx file, convert it to HTML, and extract terms, excluding non-relevant content.
     """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
     print("File received:", file_path)
-
-    # Check if file is PDF or DOCX
-    if file_path.lower().endswith(".pdf"):
-        print("File is PDF, converting to DOCX...")
-        file_path = convert_pdf_to_docx(file_path)
-        print(f"PDF converted to DOCX: {file_path}")
 
     # Open file in binary mode
     with open(file_path, "rb") as file:
@@ -49,7 +38,7 @@ def process_uploaded_file(file_path):
 
     # Extract and return text chunks separated by newlines (or whitespace lines), excluding non-legal content
     legal_terms = []
-    
+
     for para in paragraphs:
         text = para.get_text().strip()
 
@@ -58,16 +47,14 @@ def process_uploaded_file(file_path):
             continue
 
         # Optional: Add more filtering based on legal patterns (e.g., "must," "shall," etc.)
-        if any(phrase in text.lower() for phrase in ["must", "shall", "agree", "comply"]):  # Basic legal language
+        if any(phrase in text.lower() for phrase in ["must", "shall", "agree", "comply", "restricted", "abide", "prohibited", "only"]):  # Extended filtering criteria
             legal_terms.append(text)
-    
-    print("Filtered legal terms:", legal_terms)
 
     return legal_terms
 
 
 if __name__ == "__main__":
-    file_path = "test_t&c_s/pp_oct_2024.pdf"
+    file_path = "test_t&c_s/sample_terms_conditions.docx"
 
     if os.path.exists(file_path):
         terms = process_uploaded_file(file_path)
@@ -75,6 +62,6 @@ if __name__ == "__main__":
         for term in terms:
             print(term)
             print()
-        print(len(terms))
+        print("Number of terms: ",len(terms))
     else:
         print(f"Error: The file {file_path} does not exist.")
