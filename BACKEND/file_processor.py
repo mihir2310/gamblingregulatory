@@ -1,9 +1,6 @@
 import mammoth
 import os
 from bs4 import BeautifulSoup
-from pdf2docx import Converter
-import tempfile
-
 
 def convert_pdf_to_docx(pdf_path):
     """
@@ -15,22 +12,14 @@ def convert_pdf_to_docx(pdf_path):
     cv.close()
     return docx_path
 
-
 def process_uploaded_file(file_path):
     """
-    Process the uploaded file (DOCX or PDF), convert to DOCX if it's a PDF, 
-    convert to HTML, and extract terms, excluding non-relevant content.
+    Process the uploaded .docx file, convert it to HTML, and extract terms, excluding non-relevant content.
     """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
     print("File received:", file_path)
-
-    # Check if file is PDF or DOCX
-    if file_path.lower().endswith(".pdf"):
-        print("File is PDF, converting to DOCX...")
-        file_path = convert_pdf_to_docx(file_path)
-        print(f"PDF converted to DOCX: {file_path}")
 
     # Open file in binary mode
     with open(file_path, "rb") as file:
@@ -49,7 +38,7 @@ def process_uploaded_file(file_path):
 
     # Extract and return text chunks separated by newlines (or whitespace lines), excluding non-legal content
     legal_terms = []
-    
+
     for para in paragraphs:
         text = para.get_text().strip()
 
@@ -57,14 +46,12 @@ def process_uploaded_file(file_path):
         if not text or "terms and conditions" in text.lower():  # Filter out the title
             continue
 
-        # Optional: Expand the list of filtering keywords based on legal patterns
-        legal_keywords = ["must", "shall", "agree", "comply", "restricted", "prohibited", "limited", "jurisdiction", "obligation"]
-        legal_phrases = ["users in the", "subject to", "limited to", "restricted to", "must comply with"]
-
-        # Check for specific legal language patterns
-        if any(phrase in text.lower() for phrase in legal_keywords) or any(phrase in text.lower() for phrase in legal_phrases):
+        # Optional: Add more filtering based on legal patterns (e.g., "must," "shall," etc.)
+        if any(phrase in text.lower() for phrase in ["must", "shall", "agree", "comply"]):  # Basic legal language
             legal_terms.append(text)
     
+    print("Filtered legal terms:", legal_terms)
+
     return legal_terms
 
 
