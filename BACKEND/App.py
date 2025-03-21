@@ -21,7 +21,7 @@ from BACKEND.file_processor import process_uploaded_file
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # To allow cross-origin requests from the frontend
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 
 # Route to handle document upload and violation checking
 @app.route('/scan-doc', methods=['POST'])
