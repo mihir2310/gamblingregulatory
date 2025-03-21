@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 from dotenv import load_dotenv
-import mammoth
+import tempfile
 
 # Add the parent directory to the system path
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -34,18 +34,16 @@ def scan_doc():
 
         print("File received:", file.filename)  # Check if file is correctly received
 
-        # Convert DOCX to HTML to extract the content
-        doc_content = mammoth.convert_to_html(file)
-        
-        # Check if doc_content.value is properly parsed
-        doc_html = doc_content.value.strip() if isinstance(doc_content.value, str) else ""
-        if not doc_html:
-            return jsonify({"error": "Failed to extract content from the document"}), 400
+        # Save the file to a temporary location
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            file.save(temp_file.name)
+            temp_file_path = temp_file.name
 
-        print("Extracted HTML content:", doc_html)  # Debugging line
+        # Process the uploaded file to extract the terms
+        terms = process_uploaded_file(temp_file_path)
+        if not terms:
+            return jsonify({"error": "Failed to extract terms from the document"}), 400
 
-        # Ensure that the doc_html is properly split into terms and then processed
-        terms = [term.strip() for term in doc_html.split('\n') if term.strip()]
         print("Terms extracted:", terms)  # Debugging line
 
         results = []
@@ -55,18 +53,16 @@ def scan_doc():
 
             # Get relevant laws from AI algorithms
             relevant_laws = GETRELEVANTLAWS(term, market_type, state_or_federal)
-            print(f"Relevant laws for '{term}':", relevant_laws)  # Added Debugging
 
             # Properly parse the relevant_laws before passing it to detect_violation
             if isinstance(relevant_laws, str):
                 relevant_laws = json.loads(relevant_laws)
 
-            # Temporarily skip violation detection
+            # Check for violations
             violation_results = detect_violation(term, relevant_laws)
 
             results.append({
                 "term": term,
-                "relevant_laws": relevant_laws,  # Updated to show retrieved laws only
                 "violations": violation_results
             })
 
