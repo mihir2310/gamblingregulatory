@@ -57,17 +57,19 @@ def process_uploaded_file(file_path):
         if not text or "terms and conditions" in text.lower():  # Filter out the title
             continue
 
-        # Optional: Add more filtering based on legal patterns (e.g., "must," "shall," etc.)
-        if any(phrase in text.lower() for phrase in ["must", "shall", "agree", "comply"]):  # Basic legal language
+        # Optional: Expand the list of filtering keywords based on legal patterns
+        legal_keywords = ["must", "shall", "agree", "comply", "restricted", "prohibited", "limited", "jurisdiction", "obligation"]
+        legal_phrases = ["users in the", "subject to", "limited to", "restricted to", "must comply with"]
+
+        # Check for specific legal language patterns
+        if any(phrase in text.lower() for phrase in legal_keywords) or any(phrase in text.lower() for phrase in legal_phrases):
             legal_terms.append(text)
     
-    print("Filtered legal terms:", legal_terms)
-
     return legal_terms
 
 
 if __name__ == "__main__":
-    file_path = "test_t&c_s/pp_oct_2024.pdf"
+    file_path = "test_t&c_s/sample_terms_conditions.docx"
 
     if os.path.exists(file_path):
         terms = process_uploaded_file(file_path)
@@ -75,6 +77,6 @@ if __name__ == "__main__":
         for term in terms:
             print(term)
             print()
-        print(len(terms))
+        print("Number of terms: ",len(terms))
     else:
         print(f"Error: The file {file_path} does not exist.")
