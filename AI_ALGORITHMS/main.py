@@ -4,9 +4,6 @@ from query_faiss import GETRELEVANTLAWS
 from status_checker import detect_violation
 import json
 
-with open("/Users/mihirsavkar/Desktop/gamblingregulatory/AI_ALGORITHMS/query_results.json", "r") as file:
-    res = json.load(file)
-
 # Load environment variables
 load_dotenv()
 
@@ -16,10 +13,10 @@ if __name__ == "__main__":
     state_or_federal = "federal"
 
     # Relevant embeddings retrieved -> res
-    # res = GETRELEVANTLAWS(query, market_type, state_or_federal)
+    RELEVANTLAWS = GETRELEVANTLAWS(query, market_type, state_or_federal)
 
     # Returns the JSON object containing the model's interpretation of the violation status of the query
-    results = detect_violation(query, res)
+    results = detect_violation(query, RELEVANTLAWS)
 
     # Save results to a JSON file
     output_path = "./violation_query_results/violation_report_test.json"

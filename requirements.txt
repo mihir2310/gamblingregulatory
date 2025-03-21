@@ -9,3 +9,6 @@ numpy
 scikit-learn
 faiss-cpu
 python-docx
+mammoth
+beautifulsoup4
+pdf2docx

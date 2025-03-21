@@ -8,15 +8,15 @@ from dotenv import load_dotenv
 load_dotenv()
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-# Violation detection using GPT
+# Violation detection using GPT - takes in the query and the relevant laws from query_faiss.GETRELEVANTLAWS
 def detect_violation(query_text, law_data):
     print("Law Data:", law_data)  # Debugging statement
 
     results = []
 
     # Ensure law_data is a list of dictionaries
-    if law_data:
-        law_data = [entry[0] if isinstance(entry, tuple) else entry for entry in law_data]
+    if isinstance(law_data, str):
+        law_data = json.loads(law_data)  # Parse if it's a string
 
     print("Extracted Law Data:", law_data)  # Debugging statement
 
@@ -57,4 +57,3 @@ def detect_violation(query_text, law_data):
 
     # Return results as JSON
     return results
-
