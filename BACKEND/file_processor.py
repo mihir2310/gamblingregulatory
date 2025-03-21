@@ -1,6 +1,7 @@
 import mammoth
 import os
 from bs4 import BeautifulSoup
+from pdf2docx import Converter
 
 def convert_pdf_to_docx(pdf_path):
     """
