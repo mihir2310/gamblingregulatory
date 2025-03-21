@@ -128,6 +128,9 @@ const Filepage = () => {
     }
   }, [fileName, uploadedFiles]);
 
+  // Create the URL for the JSON result (only when scanResult is available)
+  const jsonUrl = scanResult ? `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(scanResult))}` : '';
+
   return (
     <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
       {/* Sidebar - Fixed width */}
@@ -211,7 +214,17 @@ const Filepage = () => {
           }}
         >
           {scanResult ? (
-            <pre>{JSON.stringify(scanResult, null, 2)}</pre>
+            <Typography variant="body1">
+              <a
+                href={jsonUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                download="scan-result.json"
+                style={{ color: '#1e90ff' }}
+              >
+                Click here to view or download the JSON result
+              </a>
+            </Typography>
           ) : (
             <Typography variant="h6" color="textSecondary">
               Placeholder
