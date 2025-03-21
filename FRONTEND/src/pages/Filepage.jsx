@@ -18,42 +18,53 @@ const Filepage = () => {
   const { project_name, fileName } = useParams();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState('');
+    const [scanResult, setScanResult] = useState(null); // State to hold scan results
   const [resizeRatio, setResizeRatio] = useState(0.50); // 50% for each section
   const containerRef = useRef(null);
   const isDraggingRef = useRef(false);
   const navigate = useNavigate();
 
   const handleFileUpload = async (event) => {
-    const market_type = "sportsbooks";  // Hardcoded for now
-    const state_or_federal = "federal"; // Hardcoded for now
-
+    const market_type = "sportsbooks";
+    const state_or_federal = "federal";
     const file = event.target.files[0];
+
     if (file) {
-        if (file.name.endsWith('.docx')) {
-            if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
-                const content = await readDocxFile(file);
+      if (file.name.endsWith('.docx')) {
+        if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('market_type', market_type);
+            formData.append('state_or_federal', state_or_federal);
 
-                // Send file content and compliance details to the backend
-                await fetch('/api/scan-doc', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fileName: file.name,
-                        fileContent: content,
-                        market_type,
-                        state_or_federal
-                    })
-                });
+            const response = await fetch('http://127.0.0.1:5000/scan-doc', {
+              method: 'POST',
+              body: formData,
+          });
+          
 
-                setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
-                setSelectedFileContent(content);
-                navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
-            } else {
-                alert('This file has already been uploaded.');
+            if (!response.ok) {
+              const errorData = await response.json();
+              alert(`Error: ${errorData.error}`);
+              return;
             }
+
+            const resultData = await response.json();
+                setScanResult(resultData); // Store the scan results
+            setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
+            //setSelectedFileContent(resultData); // Show JSON in placeholder
+            navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
+          } catch (error) {
+            console.error('Fetch error:', error);
+            alert(`Fetch error: ${error.message}`);
+          }
         } else {
-            alert('Please upload a .docx file.');
+          alert('This file has already been uploaded.');
         }
+      } else {
+        alert('Please upload a .docx file.');
+      }
     }
   };
 
@@ -201,9 +212,14 @@ const Filepage = () => {
             marginRight: '6px',
           }}
         >
-          <Typography variant="h6" color="textSecondary">
-            Placeholder
-          </Typography>
+            {/* Display scan results as JSON */}
+            {scanResult ? (
+                <pre>{JSON.stringify(scanResult, null, 2)}</pre>
+            ) : (
+                <Typography variant="h6" color="textSecondary">
+                    Placeholder
+                </Typography>
+            )}
         </Box>
 
         {/* Resizer Handle */}
