@@ -18,8 +18,6 @@ Postman -
 
 I need to separate these two, because the scan-doc should only parse the pdf/chunk it up and take in the jurisdiction, market_type information and pass these three parameters to another api endpoint ideally called maybe "return_violation_report," which could be a json object containing for each t&c chunk the full three relevant laws + violation status + explanation (I'll call this JSON file something like doc-violation-summary_json.json).
 
-- Existing bug: there is a faiss_index repo similar to the same one in AI_ALGORITHMS being created in BACKEND whenever the Postman request for the whole scan-doc is ran (need to separate and look into that).
-
 Then, this JSON will be reverse parsed and displayed on the frontend 👍
 
 ---
