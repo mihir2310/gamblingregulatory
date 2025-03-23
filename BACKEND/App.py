@@ -23,9 +23,52 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"/scan-doc": {"origins": "http://localhost:5173"}})
 
+STORAGE_FILE = 'storage.json'
+
+
+def load_data():
+    try:
+        with open(STORAGE_FILE, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+
+def save_data(data):
+    with open(STORAGE_FILE, 'w') as f:
+        json.dump(data, f)
+
+
+@app.route('/documents', methods=['POST'])
+def save_document():
+    doc = request.json
+    all_docs = load_data()
+    all_docs.append(doc)
+    save_data(all_docs)
+    return jsonify({'message': 'saved successfully'}), 201
+
+
+@app.route('/save', methods=['POST'])
+def save_docs():
+    content = request.json
+    data = load_data()
+    data['documents'] = content
+    save_data(data)
+    return 'Saved'
+
+
+@app.route('/load', methods=['GET'])
+def load():
+    print('loading')
+    data = load_data()
+    print(data)
+    return data
+
+
 # Route to handle document upload and violation checking
 @app.route('/scan-doc', methods=['POST', 'OPTIONS'])  # Allow OPTIONS method
 def scan_doc():
+    print('attempting')
     if request.method == 'OPTIONS':
         response = app.response_class(
             response='',
