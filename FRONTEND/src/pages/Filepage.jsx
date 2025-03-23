@@ -20,6 +20,7 @@ const Filepage = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState('');
   const [scanResult, setScanResult] = useState(null); // State to hold scan results
+  const [highlightedTerm, setHighlightedTerm] = useState(null); // Currently clicked term
   const [resizeRatio, setResizeRatio] = useState(0.50); // 50% for each section
   const [isLoading, setIsLoading] = useState(false); // State for loading popup
   const containerRef = useRef(null);
@@ -27,15 +28,15 @@ const Filepage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const doc = location.state?.document;
-  console.log(doc);
-
-  useEffect(() => {
-    if (location.state?.document) {
-      setSelectedFileContent(doc.content);
-      setScanResult(doc.scan_result)
-    }
-  }, [location.state]);
+   const doc = location.state?.document;
+   console.log(doc);
+ 
+   useEffect(() => {
+     if (location.state?.document) {
+       setSelectedFileContent(doc.content);
+       setScanResult(doc.scan_result)
+     }
+   }, [location.state]);
 
   const handleFileUpload = async (event) => {
     const market_type = "sportsbooks";
@@ -52,14 +53,10 @@ const Filepage = () => {
             formData.append('market_type', market_type);
             formData.append('state_or_federal', state_or_federal);
 
-            console.log('here')
-
             const response = await fetch('/api/scan-doc', {
               method: 'POST',
               body: formData,
             });
-
-            console.log('here')
 
             if (!response.ok) {
               const errorData = await response.json();
@@ -72,19 +69,18 @@ const Filepage = () => {
             setScanResult(resultData); // Store the scan results
             const fileContent = await readDocxFile(file); // Convert .docx content to HTML
             setSelectedFileContent(fileContent); // Set the HTML content
-
-              await fetch('/api/documents', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    name: file.name,
-                    content: fileContent,
-                    scan_result: resultData,
-                  }),
-              });
-
+            
+            await fetch('/api/documents', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: file.name,
+                content: fileContent,
+                scan_result: resultData,
+              }),
+            });
 
             setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
             navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
@@ -109,10 +105,8 @@ const Filepage = () => {
     return value;
   };
 
-  const handleFileSelect = async (file) => {
-    const content = await readDocxFile(file);
-    setSelectedFileContent(content);
-    navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
+  const handleTermClick = (term) => {
+    setHighlightedTerm(term); // Update the highlighted term
   };
 
   const handleResizeStart = (e) => {
@@ -157,12 +151,9 @@ const Filepage = () => {
     }
   }, [fileName, uploadedFiles]);
 
-  // Create the URL for the JSON result (only when scanResult is available)
-  const jsonUrl = scanResult ? `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(scanResult))}` : '';
-
   return (
     <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
-      {/* Sidebar - Fixed width */}
+      {/* Sidebar */}
       <Box
         sx={{
           width: '250px',
@@ -190,101 +181,44 @@ const Filepage = () => {
               onChange={handleFileUpload}
             />
           </Button>
-
-          <List>
-            {uploadedFiles.map((file, index) => (
-              <ListItem key={index} disablePadding>
-                <ListItemButton>
-                  <Link
-                    to={`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`}
-                    style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
-                    onClick={() => handleFileSelect(file)}
-                  >
-                    <ListItemText primary={file.name} />
-                  </Link>
-                  <IconButton
-                    edge="end"
-                    color="error"
-                    onClick={() => handleFileRemove(file)}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
         </Stack>
       </Box>
 
-      {/* Main Content - Full Width */}
-      <Box
-        ref={containerRef}
-        sx={{
-          display: 'flex',
-          height: '100vh',
-          flexGrow: 1,
-          position: 'relative',
-        }}
-      >
-        {/* JSON Placeholder */}
+      {/* Main Content */}
+      <Box ref={containerRef} sx={{ display: 'flex', height: '100vh', flexGrow: 1, position: 'relative' }}>
+        {/* Placeholder */}
         <Box
           sx={{
             width: `${resizeRatio * 100}%`,
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            flexDirection: 'column',
             border: '1px solid #ddd',
-            borderRadius: '10px',
             padding: '24px',
             backgroundColor: '#f0f0f0',
             overflowY: 'auto',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            marginRight: '6px',
           }}
         >
-          {scanResult ? (
-            <Typography variant="body1">
-              <a
-                href={jsonUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download="scan-result.json"
-                style={{ color: '#1e90ff' }}
-              >
-                Click here to view or download the JSON result
-              </a>
-            </Typography>
+          {highlightedTerm ? (
+            <Box>
+              <Typography variant="h6" color="primary">
+                Violations for: {highlightedTerm.term}
+              </Typography>
+              {highlightedTerm.violations.map((violation, index) => (
+                <Box key={index} sx={{ marginBottom: '16px' }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {violation["Law Name"]}
+                  </Typography>
+                  <Typography variant="body2">{violation.Explanation}</Typography>
+                </Box>
+              ))}
+            </Box>
           ) : (
             <Typography variant="h6" color="textSecondary">
-              Placeholder
+              Click a term to view violations
             </Typography>
           )}
         </Box>
-
-        {/* Resizer Handle */}
-        <Box
-          sx={{
-            width: '12px',
-            cursor: 'col-resize',
-            backgroundColor: '#ddd',
-            borderRadius: '4px',
-            zIndex: 10,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            '&:hover': {
-              backgroundColor: '#bbb',
-            },
-            '&::after': {
-              content: '""',
-              height: '30px',
-              width: '4px',
-              backgroundColor: '#999',
-              borderRadius: '2px',
-            },
-          }}
-          onMouseDown={handleResizeStart}
-        />
 
         {/* DOCX Preview */}
         <Box
@@ -299,50 +233,29 @@ const Filepage = () => {
             marginLeft: '6px',
             minWidth: '100px',
           }}
-          contentEditable
-          suppressContentEditableWarning
-          dangerouslySetInnerHTML={{
-            __html:
-              selectedFileContent ||
-              '<p style="color:gray; text-align:center;">No file selected</p>',
-          }}
-        />
-      </Box>
-      {/* Loading Popup */}
-      {isLoading && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000, // Ensure it appears above everything else
-          }}
         >
-          <Box
-            sx={{
-              backgroundColor: '#fff',
-              padding: '20px',
-              borderRadius: '10px',
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-              textAlign: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <CircularProgress size={50} sx={{ marginBottom: '16px' }} />
-            <Typography variant="h6" color="textSecondary">
-              Processing...
+          {scanResult ? (
+            scanResult.map((item, index) => (
+              <Typography
+                key={index}
+                onClick={() => handleTermClick(item)}
+                sx={{
+                  cursor: 'pointer',
+                  color: 'blue',
+                  textDecoration: 'underline',
+                  marginBottom: '8px',
+                }}
+              >
+                {item.term}
+              </Typography>
+            ))
+          ) : (
+            <Typography style={{ color: 'gray', textAlign: 'center' }}>
+              No file selected
             </Typography>
-          </Box>
+          )}
         </Box>
-      )}
+      </Box>
     </Box>
   );
 };
