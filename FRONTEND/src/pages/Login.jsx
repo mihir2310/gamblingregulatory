@@ -13,7 +13,9 @@ function Login({ onLogin }) {
     // Example login validation (replace with real validation)
     if (username === 'admin' && password === 'admin') {
         onLogin();  // Call the onLogin function from App.jsx
+        console.log('trying axios')
         const docs = await axios.get('/api/load');
+        console.log('axios worked')
       navigate('/dashboard', {state: {documents: docs.data }});  // Navigate to the dashboard
     } else {
       alert('Invalid credentials');

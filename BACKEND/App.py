@@ -21,7 +21,8 @@ from BACKEND.file_processor import process_uploaded_file
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/scan-doc": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+
 
 STORAGE_FILE = 'storage.json'
 
@@ -61,7 +62,6 @@ def save_docs():
 def load():
     print('loading')
     data = load_data()
-    print(data)
     return data
 
 
