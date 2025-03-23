@@ -13,19 +13,31 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Close as CloseIcon, Check as CheckIcon } from '@mui/icons-material';
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 function Dashboard() {
   const [documents, setDocuments] = useState([]);
   const [editingDocIndex, setEditingDocIndex] = useState(null);
   const [newDocName, setNewDocName] = useState('');
   const inputRef = useRef(null);
+  const location = useLocation();
 
   // ✅ Load documents from localStorage on mount
   useEffect(() => {
-    const storedDocs = JSON.parse(localStorage.getItem('documents')) || [];
-    setDocuments(storedDocs);
-  }, []);
+  const stateDocs = location.state?.documents;
+  const storedDocs = JSON.parse(localStorage.getItem('documents')) || [];
+
+  const initialDocs = stateDocs || storedDocs;
+
+  setDocuments(initialDocs);
+
+  console.log(stateDocs)
+
+  // ✅ Persist stateDocs to localStorage if passed in
+  if (stateDocs) {
+    localStorage.setItem('documents', JSON.stringify(stateDocs));
+  }
+}, [location.state]);
 
   // ✅ Save documents to localStorage whenever they change
   const saveDocuments = (docs) => {
@@ -112,6 +124,7 @@ function Dashboard() {
                     <>
                       <Link
                         to={`/dashboard/${encodeURIComponent(doc.name)}`}
+                        state={{ document: doc }}
                         style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
                       >
                         <ListItemText primary={doc.name} />

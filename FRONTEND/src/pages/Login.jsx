@@ -1,5 +1,6 @@
 // pages/Login.jsx
 import React, { useState } from 'react';
+import axios from 'axios'
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,11 +9,12 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Example login validation (replace with real validation)
     if (username === 'admin' && password === 'admin') {
-      onLogin();  // Call the onLogin function from App.jsx
-      navigate('/dashboard');  // Navigate to the dashboard
+        onLogin();  // Call the onLogin function from App.jsx
+        const docs = await axios.get('/api/load');
+      navigate('/dashboard', {state: {documents: docs.data }});  // Navigate to the dashboard
     } else {
       alert('Invalid credentials');
     }

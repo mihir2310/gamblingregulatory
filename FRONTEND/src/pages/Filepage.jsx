@@ -11,7 +11,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Close as CloseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import mammoth from 'mammoth';
 
@@ -25,6 +25,17 @@ const Filepage = () => {
   const containerRef = useRef(null);
   const isDraggingRef = useRef(false);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const doc = location.state?.document;
+  console.log(doc);
+
+  useEffect(() => {
+    if (location.state?.document) {
+      setSelectedFileContent(doc.content);
+      setScanResult(doc.scan_result)
+    }
+  }, [location.state]);
 
   const handleFileUpload = async (event) => {
     const market_type = "sportsbooks";
@@ -41,10 +52,14 @@ const Filepage = () => {
             formData.append('market_type', market_type);
             formData.append('state_or_federal', state_or_federal);
 
-            const response = await fetch('http://127.0.0.1:5000/scan-doc', {
+            console.log('here')
+
+            const response = await fetch('/api/scan-doc', {
               method: 'POST',
               body: formData,
             });
+
+            console.log('here')
 
             if (!response.ok) {
               const errorData = await response.json();
@@ -57,6 +72,20 @@ const Filepage = () => {
             setScanResult(resultData); // Store the scan results
             const fileContent = await readDocxFile(file); // Convert .docx content to HTML
             setSelectedFileContent(fileContent); // Set the HTML content
+
+              await fetch('/api/documents', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    name: file.name,
+                    content: fileContent,
+                    scan_result: resultData,
+                  }),
+              });
+
+
             setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
             navigate(`/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`);
           } catch (error) {
