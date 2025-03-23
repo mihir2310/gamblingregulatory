@@ -98,3 +98,28 @@ Same functionality will be available on the analogous button of the Version.jsx 
 ---
 
 I believe that once these parts are implemented, and basic demo-visible bugs are fixed, the MVP would be ready for Demo!!!!!!!!👍👍👍👍👍👍👍
+
+---
+
+### 03/21
+
+So, the CORS Issue has been fixed and the scan-doc api route has been connected to the frontend.
+
+Additionally, it now runs fully well once "scan .docx file" is clicked and displays the document on the right side and in the placeholder there's a link that allows you to download the violation report summary.
+
+All that needs to be done now, is instead of displaying the downloadable link, the results are auto-displayed in a clean format in the placeholder section separated by LAW Title tab and clickable-highlightable underlined sections.
+
+Should be able to do in a couple days i.e. <2 days.
+
+After that's done, I can start adding aesthetic changes and run optimization/fine-tuning to improve the product.
+
+Can honestly start working on the landing page, and marketing+sales part can start soon too
+
+API Costs per full request = $0.01 per scan.
+~ 10-20 seconds to return violation-report results.
+
+I got 2.75 mill api credits from somewhere gotta figure out how to use those.
+
+Crazy great progress though!!!!
+
+---

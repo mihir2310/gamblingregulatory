@@ -21,21 +21,35 @@ from BACKEND.file_processor import process_uploaded_file
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
+CORS(app, resources={r"/scan-doc": {"origins": "http://localhost:5173"}})
 
 # Route to handle document upload and violation checking
-@app.route('/scan-doc', methods=['POST'])
+@app.route('/scan-doc', methods=['POST', 'OPTIONS'])  # Allow OPTIONS method
 def scan_doc():
+    if request.method == 'OPTIONS':
+        response = app.response_class(
+            response='',
+            status=200,
+            mimetype='application/json'
+        )
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
     try:
+        # Check if the request has the 'file' part
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part"}), 400
+
         # Get the uploaded file from the request
-        file = request.files.get('file')
+        file = request.files['file']
         if not file or not file.filename.endswith('.docx'):
             return jsonify({"error": "Please upload a .docx file"}), 400
 
         print("File received:", file.filename)  # Check if file is correctly received
 
         # Save the file to a temporary location
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_file:
             file.save(temp_file.name)
             temp_file_path = temp_file.name
 
@@ -46,17 +60,23 @@ def scan_doc():
 
         print("Terms extracted:", terms)  # Debugging line
 
+        # Extract market_type and state_or_federal from the form data
+        market_type = request.form.get('market_type', 'sportsbooks')
+        state_or_federal = request.form.get('state_or_federal', 'federal')
+
         results = []
         for term in terms:
-            market_type = request.form.get('market_type', 'sportsbooks')
-            state_or_federal = request.form.get('state_or_federal', 'federal')
 
             # Get relevant laws from AI algorithms
             relevant_laws = GETRELEVANTLAWS(term, market_type, state_or_federal)
 
             # Properly parse the relevant_laws before passing it to detect_violation
             if isinstance(relevant_laws, str):
-                relevant_laws = json.loads(relevant_laws)
+                try:
+                    relevant_laws = json.loads(relevant_laws)
+                except json.JSONDecodeError:
+                    print(f"Error decoding JSON for term: {term}.  Raw value: {relevant_laws}")
+                    relevant_laws = []  # Or handle the error appropriately
 
             # Check for violations
             violation_results = detect_violation(term, relevant_laws)
