@@ -26,6 +26,7 @@ const Filepage = () => {
   const [resizeRatio, setResizeRatio] = useState(0.50); // 50% for each section
   const [isLoading, setIsLoading] = useState(false); // State for loading popup
   const [activeTab, setActiveTab] = useState(0); // State for law violations tabs
+  const [expandedViolation, setExpandedViolation] = useState(null);
   const containerRef = useRef(null);
   const isDraggingRef = useRef(false);
   const navigate = useNavigate();
@@ -267,7 +268,12 @@ const Filepage = () => {
                                   padding: '12px',
                                   backgroundColor: 'white',
                                   borderRadius: '4px',
-                                  width: '100%',
+                                }}
+                                onClick={() => {
+                                  // Toggle expanded state for this violation
+                                  setExpandedViolation((prev) =>
+                                    prev === vIndex ? null : vIndex
+                                  );
                                 }}
                               >
                                 <Typography
@@ -281,9 +287,9 @@ const Filepage = () => {
                                 <Typography
                                   variant="body2"
                                   sx={{
-                                    textOverflow: 'ellipsis',
-                                    overflow: 'hidden',
-                                    whiteSpace: 'nowrap',
+                                    textOverflow: expandedViolation === vIndex ? 'unset' : 'ellipsis',
+                                    overflow: expandedViolation === vIndex ? 'visible' : 'hidden',
+                                    whiteSpace: expandedViolation === vIndex ? 'normal' : 'nowrap',
                                     width: '100%',
                                   }}
                                 >
