@@ -55,7 +55,7 @@ def process_uploaded_file(file_path):
         # Skip non-legal content (titles, intro sections, etc.)
         if not text or "terms and conditions" in text.lower():  # Filter out the title
             terms.append({
-                "content": para,
+                "content": text,
                 "type": "nonlegal"
             })
 
@@ -66,7 +66,7 @@ def process_uploaded_file(file_path):
         # Check for specific legal language patterns
         if any(phrase in text.lower() for phrase in legal_keywords) or any(phrase in text.lower() for phrase in legal_phrases):
             terms.append({
-                "content": para,
+                "content": text,
                 "type": "legal"
             })
 
