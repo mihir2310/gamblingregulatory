@@ -9,6 +9,8 @@ import {
   ListItemButton,
   ListItemText,
   CircularProgress,
+  Tabs,
+  Tab
 } from '@mui/material';
 import { Close as CloseIcon, PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
@@ -23,20 +25,21 @@ const Filepage = () => {
   const [highlightedTerm, setHighlightedTerm] = useState(null); // Currently clicked term
   const [resizeRatio, setResizeRatio] = useState(0.50); // 50% for each section
   const [isLoading, setIsLoading] = useState(false); // State for loading popup
+  const [activeTab, setActiveTab] = useState(0); // State for law violations tabs
   const containerRef = useRef(null);
   const isDraggingRef = useRef(false);
   const navigate = useNavigate();
 
   const location = useLocation();
-   const doc = location.state?.document;
-   console.log(doc);
+  const doc = location.state?.document;
+  console.log(doc);
  
-   useEffect(() => {
+  useEffect(() => {
      if (location.state?.document) {
        setSelectedFileContent(doc.content);
        setScanResult(doc.scan_result)
      }
-   }, [location.state]);
+  }, [location.state]);
 
   const handleFileUpload = async (event) => {
     const market_type = "sportsbooks";
@@ -107,7 +110,8 @@ const Filepage = () => {
 
   const handleTermClick = (term) => {
     setHighlightedTerm(term); // Update the highlighted term
-  };
+    setActiveTab(0); // Reset to first tab when new term is clicked
+};
 
   const handleResizeStart = (e) => {
     e.preventDefault();
@@ -190,6 +194,7 @@ const Filepage = () => {
         <Box
           sx={{
             width: `${resizeRatio * 100}%`,
+            maxWidth: '600px', // Restrict max width
             display: 'flex',
             flexDirection: 'column',
             border: '1px solid #ddd',
@@ -197,21 +202,100 @@ const Filepage = () => {
             backgroundColor: '#f0f0f0',
             overflowY: 'auto',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            position: 'relative',
           }}
         >
           {highlightedTerm ? (
-            <Box>
-              <Typography variant="h6" color="primary">
+            <Box
+              sx={{
+                width: '100%',
+                maxHeight: '400px', // Restrict max height
+                overflowY: 'auto',
+              }}
+            >
+              <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
                 Violations for: {highlightedTerm.term}
               </Typography>
-              {highlightedTerm.violations.map((violation, index) => (
-                <Box key={index} sx={{ marginBottom: '16px' }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    {violation["Law Name"]}
-                  </Typography>
-                  <Typography variant="body2">{violation.Explanation}</Typography>
-                </Box>
-              ))}
+
+              {highlightedTerm.violations.length > 0 && (
+                <>
+                  <Tabs
+                    value={activeTab}
+                    onChange={(e, newValue) => setActiveTab(newValue)}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    sx={{
+                      borderBottom: '1px solid #ddd',
+                      marginBottom: '16px',
+                      width: '100%',
+                    }}
+                  >
+                    {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
+                      (lawName, index) => (
+                        <Tab
+                          key={lawName}
+                          label={lawName}
+                          sx={{
+                            textTransform: 'none',
+                            maxWidth: '200px', // Limit tab width
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        />
+                      )
+                    )}
+                  </Tabs>
+
+                  {/* Display violations for the active tab */}
+                  {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
+                    (lawName, index) =>
+                      activeTab === index && (
+                        <Box
+                          key={lawName}
+                          sx={{
+                            maxHeight: 'calc(100% - 100px)',
+                            overflowY: 'auto',
+                          }}
+                        >
+                          {highlightedTerm.violations
+                            .filter(v => v['Law Name'] === lawName)
+                            .map((violation, vIndex) => (
+                              <Box
+                                key={vIndex}
+                                sx={{
+                                  marginBottom: '16px',
+                                  padding: '12px',
+                                  backgroundColor: 'white',
+                                  borderRadius: '4px',
+                                  width: '100%',
+                                }}
+                              >
+                                <Typography
+                                  variant="subtitle1"
+                                  fontWeight="bold"
+                                  color="primary"
+                                  sx={{ marginBottom: '8px' }}
+                                >
+                                  {violation['Category']}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    width: '100%',
+                                  }}
+                                >
+                                  {violation['Law Text']}
+                                </Typography>
+                              </Box>
+                            ))}
+                        </Box>
+                      )
+                  )}
+                </>
+              )}
             </Box>
           ) : (
             <Typography variant="h6" color="textSecondary">
