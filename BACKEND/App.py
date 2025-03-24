@@ -110,24 +110,42 @@ def scan_doc():
         results = []
         for term in terms:
 
+            print('in loop term', term)
+
+            if term['type'] == 'nonlegal':
+                results.append(term)
+                continue
+
+            print(term['content'])
+
             # Get relevant laws from AI algorithms
-            relevant_laws = GETRELEVANTLAWS(term, market_type, state_or_federal)
+            relevant_laws = GETRELEVANTLAWS(term['content'], market_type, state_or_federal)
+
+            print('relevant laws:', relevant_laws)
 
             # Properly parse the relevant_laws before passing it to detect_violation
             if isinstance(relevant_laws, str):
                 try:
                     relevant_laws = json.loads(relevant_laws)
                 except json.JSONDecodeError:
-                    print(f"Error decoding JSON for term: {term}.  Raw value: {relevant_laws}")
+                    print(f"Error decoding JSON for term: {term['content']}.  Raw value: {relevant_laws}")
                     relevant_laws = []  # Or handle the error appropriately
 
             # Check for violations
-            violation_results = detect_violation(term, relevant_laws)
+            violation_results = detect_violation(term['content'], relevant_laws)
 
             results.append({
-                "term": term,
+                "term": term['content'],
+                'type': 'legal',
                 "violations": violation_results
             })
+        try:
+            with open('storage.json', 'r+') as f:
+                data = json.load(f)
+                data.append(results)
+                json.dump(data, f)
+        except FileNotFoundError:
+            print("problem storing data")
 
         return jsonify(results)
 

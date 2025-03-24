@@ -42,17 +42,22 @@ def process_uploaded_file(file_path):
 
     # Use BeautifulSoup to parse the HTML and extract paragraphs
     soup = BeautifulSoup(doc_html, "html.parser")
+    print(soup.prettify())
     paragraphs = soup.find_all("p")
 
     # Extract and return text chunks separated by newlines (or whitespace lines), excluding non-legal content
-    legal_terms = []
-    
+    terms = []
+
+
     for para in paragraphs:
         text = para.get_text().strip()
 
         # Skip non-legal content (titles, intro sections, etc.)
         if not text or "terms and conditions" in text.lower():  # Filter out the title
-            continue
+            terms.append({
+                "content": para,
+                "type": "nonlegal"
+            })
 
         # Optional: Expand the list of filtering keywords based on legal patterns
         legal_keywords = ["must", "shall", "agree", "comply", "restricted", "prohibited", "limited", "jurisdiction", "obligation"]
@@ -60,9 +65,12 @@ def process_uploaded_file(file_path):
 
         # Check for specific legal language patterns
         if any(phrase in text.lower() for phrase in legal_keywords) or any(phrase in text.lower() for phrase in legal_phrases):
-            legal_terms.append(text)
+            terms.append({
+                "content": para,
+                "type": "legal"
+            })
 
-    return legal_terms
+    return terms
 
 
 if __name__ == "__main__":
