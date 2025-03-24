@@ -192,123 +192,151 @@ const Filepage = () => {
       {/* Main Content */}
       <Box ref={containerRef} sx={{ display: 'flex', height: '100vh', flexGrow: 1, position: 'relative' }}>
         {/* Placeholder */}
-        <Box
-          sx={{
-            width: `${resizeRatio * 100}%`,
-            maxWidth: '600px', // Restrict max width
-            display: 'flex',
-            flexDirection: 'column',
-            border: '1px solid #ddd',
-            padding: '24px',
-            backgroundColor: '#f0f0f0',
-            overflowY: 'auto',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            position: 'relative',
-          }}
-        >
-          {highlightedTerm ? (
-            <Box
-              sx={{
-                width: '100%',
-                maxHeight: '400px', // Restrict max height
-                overflowY: 'auto',
-              }}
-            >
-              <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
-                Violations for: {highlightedTerm.term}
-              </Typography>
+<Box
+  sx={{
+    width: `${resizeRatio * 100}%`,
+    maxWidth: '600px', // Restrict max width
+    display: 'flex',
+    flexDirection: 'column',
+    border: '1px solid #ddd',
+    padding: '24px',
+    backgroundColor: '#f0f0f0',
+    overflowY: 'auto',
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    position: 'relative',
+  }}
+>
+  {highlightedTerm ? (
+    <Box
+      sx={{
+        width: '100%',
+        maxHeight: '400px', // Restrict max height
+        overflowY: 'auto',
+      }}
+    >
+      <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
+        Violations for: {highlightedTerm.term}
+      </Typography>
 
-              {highlightedTerm.violations.length > 0 && (
-                <>
-                  <Tabs
-                    value={activeTab}
-                    onChange={(e, newValue) => setActiveTab(newValue)}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    sx={{
-                      borderBottom: '1px solid #ddd',
-                      marginBottom: '16px',
-                      width: '100%',
-                    }}
-                  >
-                    {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
-                      (lawName, index) => (
-                        <Tab
-                          key={lawName}
-                          label={lawName}
-                          sx={{
-                            textTransform: 'none',
-                            maxWidth: '200px', // Limit tab width
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
-                        />
-                      )
-                    )}
-                  </Tabs>
+      {highlightedTerm.violations.filter(v => v['Violation'] === 'Yes').length > 0 ? (
+        <>
+          <Tabs
+            value={activeTab}
+            onChange={(e, newValue) => setActiveTab(newValue)}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{
+              borderBottom: '1px solid #ddd',
+              marginBottom: '16px',
+              width: '100%',
+            }}
+          >
+            {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
+              (lawName, index) => (
+                <Tab
+                  key={lawName}
+                  label={lawName}
+                  sx={{
+                    textTransform: 'none',
+                    maxWidth: '200px', // Limit tab width
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                />
+              )
+            )}
+          </Tabs>
 
-                  {/* Display violations for the active tab */}
-                  {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
-                    (lawName, index) =>
-                      activeTab === index && (
-                        <Box
-                          key={lawName}
+          {/* Display violations for the active tab */}
+          {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
+            (lawName, index) =>
+              activeTab === index && (
+                <Box
+                  key={lawName}
+                  sx={{
+                    maxHeight: 'calc(100% - 100px)',
+                    overflowY: 'auto',
+                  }}
+                >
+                  {highlightedTerm.violations
+                    .filter(v => v['Law Name'] === lawName && v['Violation'] === 'Yes') // Only show "Yes" violations
+                    .map((violation, vIndex) => (
+                      <Box
+                        key={vIndex}
+                        sx={{
+                          marginBottom: '16px',
+                          padding: '12px',
+                          backgroundColor: 'white',
+                          borderRadius: '4px',
+                        }}
+                        onClick={() => {
+                          // Toggle expanded state for this violation
+                          setExpandedViolation((prev) =>
+                            prev === vIndex ? null : vIndex
+                          );
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          color="primary"
+                          sx={{ marginBottom: '8px' }}
+                        >
+                          {violation['Category']}
+                        </Typography>
+                        <Typography
+                          variant="body2"
                           sx={{
-                            maxHeight: 'calc(100% - 100px)',
-                            overflowY: 'auto',
+                            textOverflow: expandedViolation === vIndex ? 'unset' : 'ellipsis',
+                            overflow: expandedViolation === vIndex ? 'visible' : 'hidden',
+                            whiteSpace: expandedViolation === vIndex ? 'normal' : 'nowrap',
+                            width: '100%',
                           }}
                         >
-                          {highlightedTerm.violations
-                            .filter(v => v['Law Name'] === lawName)
-                            .map((violation, vIndex) => (
-                              <Box
-                                key={vIndex}
-                                sx={{
-                                  marginBottom: '16px',
-                                  padding: '12px',
-                                  backgroundColor: 'white',
-                                  borderRadius: '4px',
-                                }}
-                                onClick={() => {
-                                  // Toggle expanded state for this violation
-                                  setExpandedViolation((prev) =>
-                                    prev === vIndex ? null : vIndex
-                                  );
-                                }}
-                              >
-                                <Typography
-                                  variant="subtitle1"
-                                  fontWeight="bold"
-                                  color="primary"
-                                  sx={{ marginBottom: '8px' }}
-                                >
-                                  {violation['Category']}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    textOverflow: expandedViolation === vIndex ? 'unset' : 'ellipsis',
-                                    overflow: expandedViolation === vIndex ? 'visible' : 'hidden',
-                                    whiteSpace: expandedViolation === vIndex ? 'normal' : 'nowrap',
-                                    width: '100%',
-                                  }}
-                                >
-                                  {violation['Law Text']}
-                                </Typography>
-                              </Box>
-                            ))}
-                        </Box>
-                      )
-                  )}
-                </>
-              )}
-            </Box>
-          ) : (
-            <Typography variant="h6" color="textSecondary">
-              Click a term to view violations
-            </Typography>
+                          {violation['Law Text']}
+                        </Typography>
+
+                        {/* Explanation below the law text */}
+                        {violation['Explanation'] && (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 'bold',
+                              marginTop: '8px',
+                            }}
+                          >
+                            Why this is a violation:
+                          </Typography>
+                        )}
+                        {violation['Explanation'] && (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              marginTop: '4px',
+                            }}
+                          >
+                            {violation['Explanation']}
+                          </Typography>
+                        )}
+                      </Box>
+                    ))}
+                </Box>
+              )
           )}
-        </Box>
+        </>
+      ) : (
+        <Typography variant="body1" color="textSecondary">
+          No violations flagged!
+        </Typography>
+      )}
+    </Box>
+  ) : (
+    <Typography variant="h6" color="textSecondary">
+      Click a term to view violations
+    </Typography>
+  )}
+</Box>
+
 
         {/* DOCX Preview */}
         <Box
