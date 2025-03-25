@@ -127,7 +127,15 @@ function Dashboard() {
                         state={{ document: doc }}
                         style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
                       >
-                        <ListItemText primary={doc.name} />
+                        <ListItemText
+                          sx={{
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '150px', 
+                          }}
+                          primary={doc.name}
+                        />
                       </Link>
                       <IconButton color="error" onClick={() => handleDocRemove(index)}>
                         <CloseIcon />
