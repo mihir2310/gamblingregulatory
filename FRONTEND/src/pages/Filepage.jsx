@@ -22,6 +22,7 @@ const Filepage = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState('');
   const [scanResult, setScanResult] = useState(null); // State to hold scan results
+  const [documentStructure, setDocumentStructure] = useState(null); // State to hold full document structure
   const [highlightedTerm, setHighlightedTerm] = useState(null); // Currently clicked term
   const [resizeRatio, setResizeRatio] = useState(0.50); // 50% for each section
   const [isLoading, setIsLoading] = useState(false); // State for loading popup
@@ -39,8 +40,28 @@ const Filepage = () => {
      if (location.state?.document) {
        setSelectedFileContent(doc.content);
        setScanResult(doc.scan_result)
+       setDocumentStructure(doc.scan_result?.[0]?.document_structure)
      }
   }, [location.state]);
+
+  // Helper function to read .docx file content
+  const readDocxFile = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const arrayBuffer = e.target.result;
+          const result = await mammoth.convertToHtml({ arrayBuffer });
+          resolve(result.value);
+        } catch (error) {
+          console.error('Error converting DOCX:', error);
+          reject(error);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  };
 
   const handleFileUpload = async (event) => {
     const market_type = "sportsbooks";
@@ -48,6 +69,7 @@ const Filepage = () => {
     const file = event.target.files[0];
 
     if (file) {
+      // Fix: Use .endsWith() instead of .endswith()
       if (file.name.endsWith('.docx')) {
         if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
           try {
@@ -65,12 +87,14 @@ const Filepage = () => {
             if (!response.ok) {
               const errorData = await response.json();
               alert(`Error: ${errorData.error}`);
-              setIsLoading(false); // Hide loading popup
+              setIsLoading(true); 
               return;
             }
 
             const resultData = await response.json();
-            setScanResult(resultData); // Store the scan results
+            setScanResult(resultData);
+            setDocumentStructure(resultData[0]?.document_structure || null);
+            
             const fileContent = await readDocxFile(file); // Convert .docx content to HTML
             setSelectedFileContent(fileContent); // Set the HTML content
             
@@ -92,7 +116,7 @@ const Filepage = () => {
             console.error('Fetch error:', error);
             alert(`Fetch error: ${error.message}`);
           } finally {
-            setIsLoading(false); // Hide loading popup
+            setIsLoading(true); 
           }
         } else {
           alert('This file has already been uploaded.');
@@ -103,16 +127,18 @@ const Filepage = () => {
     }
   };
 
-  const readDocxFile = async (file) => {
-    const arrayBuffer = await file.arrayBuffer();
-    const { value } = await mammoth.convertToHtml({ arrayBuffer });
-    return value;
-  };
-
   const handleTermClick = (term) => {
-    setHighlightedTerm(term); // Update the highlighted term
+    // Find the corresponding scan result for this term
+    const matchingScanResult = scanResult?.find(result => result.term === term.text);
+    
+    // Set the highlighted term with full scan result information
+    setHighlightedTerm({
+      ...term,
+      violations: matchingScanResult?.violations || []
+    });
+    
     setActiveTab(0); // Reset to first tab when new term is clicked
-};
+  };
 
   const handleResizeStart = (e) => {
     e.preventDefault();
@@ -191,154 +217,147 @@ const Filepage = () => {
 
       {/* Main Content */}
       <Box ref={containerRef} sx={{ display: 'flex', height: '100vh', flexGrow: 1, position: 'relative' }}>
-        {/* Placeholder */}
-<Box
-  sx={{
-    width: `${resizeRatio * 100}%`,
-    maxWidth: '600px', // Restrict max width
-    display: 'flex',
-    flexDirection: 'column',
-    border: '1px solid #ddd',
-    padding: '24px',
-    backgroundColor: '#f0f0f0',
-    overflowY: 'auto',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-    position: 'relative',
-  }}
->
-  {highlightedTerm ? (
-    <Box
-      sx={{
-        width: '100%',
-        maxHeight: '400px', // Restrict max height
-        overflowY: 'auto',
-      }}
-    >
-      <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
-        Violations for: {highlightedTerm.term}
-      </Typography>
+        {/* Violations Panel */}
+        <Box
+          sx={{
+            width: `${resizeRatio * 100}%`,
+            maxWidth: '600px', // Restrict max width
+            display: 'flex',
+            flexDirection: 'column',
+            border: '1px solid #ddd',
+            padding: '24px',
+            backgroundColor: '#f0f0f0',
+            overflowY: 'auto',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            position: 'relative',
+          }}
+        >
+          {highlightedTerm ? (
+            <Box>
+              <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
+                Violations for: {highlightedTerm.text}
+              </Typography>
 
-      {highlightedTerm.violations.filter(v => v['Violation'] === 'Yes').length > 0 ? (
-        <>
-          <Tabs
-            value={activeTab}
-            onChange={(e, newValue) => setActiveTab(newValue)}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{
-              borderBottom: '1px solid #ddd',
-              marginBottom: '16px',
-              width: '100%',
-            }}
-          >
-            {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
-              (lawName, index) => (
-                <Tab
-                  key={lawName}
-                  label={lawName}
-                  sx={{
-                    textTransform: 'none',
-                    maxWidth: '200px', // Limit tab width
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                />
-              )
-            )}
-          </Tabs>
-
-          {/* Display violations for the active tab */}
-          {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
-            (lawName, index) =>
-              activeTab === index && (
-                <Box
-                  key={lawName}
-                  sx={{
-                    maxHeight: 'calc(100% - 100px)',
-                    overflowY: 'auto',
-                  }}
-                >
-                  {highlightedTerm.violations
-                    .filter(v => v['Law Name'] === lawName && v['Violation'] === 'Yes') // Only show "Yes" violations
-                    .map((violation, vIndex) => (
-                      <Box
-                        key={vIndex}
-                        sx={{
-                          marginBottom: '16px',
-                          padding: '12px',
-                          backgroundColor: 'white',
-                          borderRadius: '4px',
-                        }}
-                        onClick={() => {
-                          // Toggle expanded state for this violation
-                          setExpandedViolation((prev) =>
-                            prev === vIndex ? null : vIndex
-                          );
-                        }}
-                      >
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight="bold"
-                          color="primary"
-                          sx={{ marginBottom: '8px' }}
-                        >
-                          {violation['Category']}
-                        </Typography>
-                        <Typography
-                          variant="body2"
+              {highlightedTerm.violations && highlightedTerm.violations.length > 0 ? (
+                <>
+                  <Tabs
+                    value={activeTab}
+                    onChange={(e, newValue) => setActiveTab(newValue)}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    sx={{
+                      borderBottom: '1px solid #ddd',
+                      marginBottom: '16px',
+                      width: '100%',
+                    }}
+                  >
+                    {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
+                      (lawName, index) => (
+                        <Tab
+                          key={lawName}
+                          label={lawName}
                           sx={{
-                            textOverflow: expandedViolation === vIndex ? 'unset' : 'ellipsis',
-                            overflow: expandedViolation === vIndex ? 'visible' : 'hidden',
-                            whiteSpace: expandedViolation === vIndex ? 'normal' : 'nowrap',
-                            width: '100%',
+                            textTransform: 'none',
+                            maxWidth: '200px', // Limit tab width
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        />
+                      )
+                    )}
+                  </Tabs>
+
+                  {/* Display violations for the active tab */}
+                  {[...new Set(highlightedTerm.violations.map(v => v['Law Name']))].map(
+                    (lawName, index) =>
+                      activeTab === index && (
+                        <Box
+                          key={lawName}
+                          sx={{
+                            maxHeight: 'calc(100% - 100px)',
+                            overflowY: 'auto',
                           }}
                         >
-                          {violation['Law Text']}
-                        </Typography>
+                          {highlightedTerm.violations
+                            .filter(v => v['Law Name'] === lawName && v['Violation'] === 'Yes')
+                            .map((violation, vIndex) => (
+                              <Box
+                                key={vIndex}
+                                sx={{
+                                  marginBottom: '16px',
+                                  padding: '12px',
+                                  backgroundColor: 'white',
+                                  borderRadius: '4px',
+                                }}
+                                onClick={() => {
+                                  // Toggle expanded state for this violation
+                                  setExpandedViolation((prev) =>
+                                    prev === vIndex ? null : vIndex
+                                  );
+                                }}
+                              >
+                                <Typography
+                                  variant="subtitle1"
+                                  fontWeight="bold"
+                                  color="primary"
+                                  sx={{ marginBottom: '8px' }}
+                                >
+                                  {violation['Category']}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    textOverflow: expandedViolation === vIndex ? 'unset' : 'ellipsis',
+                                    overflow: expandedViolation === vIndex ? 'visible' : 'hidden',
+                                    whiteSpace: expandedViolation === vIndex ? 'normal' : 'nowrap',
+                                    width: '100%',
+                                  }}
+                                >
+                                  {violation['Law Text']}
+                                </Typography>
 
-                        {/* Explanation below the law text */}
-                        {violation['Explanation'] && (
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 'bold',
-                              marginTop: '8px',
-                            }}
-                          >
-                            Why this is a violation:
-                          </Typography>
-                        )}
-                        {violation['Explanation'] && (
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              marginTop: '4px',
-                            }}
-                          >
-                            {violation['Explanation']}
-                          </Typography>
-                        )}
-                      </Box>
-                    ))}
-                </Box>
-              )
+                                {/* Explanation below the law text */}
+                                {violation['Explanation'] && (
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: 'bold',
+                                      marginTop: '8px',
+                                    }}
+                                  >
+                                    Why this is a violation:
+                                  </Typography>
+                                )}
+                                {violation['Explanation'] && (
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      marginTop: '4px',
+                                    }}
+                                  >
+                                    {violation['Explanation']}
+                                  </Typography>
+                                )}
+                              </Box>
+                            ))}
+                        </Box>
+                      )
+                  )}
+                </>
+              ) : (
+                <Typography variant="body1" color="textSecondary">
+                  No violations flagged!
+                </Typography>
+              )}
+            </Box>
+          ) : (
+            <Typography variant="h6" color="textSecondary">
+              Click a term to view violations
+            </Typography>
           )}
-        </>
-      ) : (
-        <Typography variant="body1" color="textSecondary">
-          No violations flagged!
-        </Typography>
-      )}
-    </Box>
-  ) : (
-    <Typography variant="h6" color="textSecondary">
-      Click a term to view violations
-    </Typography>
-  )}
-</Box>
+        </Box>
 
-
-        {/* DOCX Preview */}
+        {/* Document Preview */}
         <Box
           sx={{
             width: `${(1 - resizeRatio) * 100}%`,
@@ -352,19 +371,19 @@ const Filepage = () => {
             minWidth: '100px',
           }}
         >
-          {scanResult ? (
-            scanResult.map((item, index) => (
+          {documentStructure ? (
+            documentStructure.map((para, index) => (
               <Typography
                 key={index}
-                onClick={() => handleTermClick(item)}
+                onClick={() => para.is_legal_term && handleTermClick(para)}
                 sx={{
-                  cursor: 'pointer',
-                  color: 'blue',
-                  textDecoration: 'underline',
+                  cursor: para.is_legal_term ? 'pointer' : 'default',
+                  color: para.is_legal_term ? 'blue' : 'black',
+                  textDecoration: para.is_legal_term ? 'underline' : 'none',
                   marginBottom: '8px',
                 }}
               >
-                {item.term}
+                {para.text}
               </Typography>
             ))
           ) : (

@@ -1,7 +1,8 @@
-import mammoth
 import os
 from bs4 import BeautifulSoup
 from pdf2docx import Converter
+import mammoth
+import re
 
 def convert_pdf_to_docx(pdf_path):
     """
@@ -16,7 +17,7 @@ def convert_pdf_to_docx(pdf_path):
 def process_uploaded_file(file_path):
     """
     Process the uploaded file (DOCX or PDF), convert to DOCX if it's a PDF, 
-    convert to HTML, and extract terms, excluding non-relevant content.
+    convert to HTML, and extract terms, preserving document structure.
     """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
@@ -44,36 +45,61 @@ def process_uploaded_file(file_path):
     soup = BeautifulSoup(doc_html, "html.parser")
     paragraphs = soup.find_all("p")
 
-    # Extract and return text chunks separated by newlines (or whitespace lines), excluding non-legal content
+    # Legal keywords and phrases for identifying potential legal terms
+    legal_keywords = ["must", "shall", "agree", "comply", "restricted", "prohibited", "limited", "jurisdiction", "obligation"]
+    legal_phrases = ["users in the", "subject to", "limited to", "restricted to", "must comply with"]
+
+    # Prepare result arrays
     legal_terms = []
-    
+    document_structure = []
+
     for para in paragraphs:
         text = para.get_text().strip()
 
-        # Skip non-legal content (titles, intro sections, etc.)
-        if not text or "terms and conditions" in text.lower():  # Filter out the title
+        # Skip completely empty paragraphs
+        if not text:
             continue
 
-        # Optional: Expand the list of filtering keywords based on legal patterns
-        legal_keywords = ["must", "shall", "agree", "comply", "restricted", "prohibited", "limited", "jurisdiction", "obligation"]
-        legal_phrases = ["users in the", "subject to", "limited to", "restricted to", "must comply with"]
+        # Determine if the paragraph is a legal term
+        is_legal_term = (
+            any(phrase in text.lower() for phrase in legal_keywords) or 
+            any(phrase in text.lower() for phrase in legal_phrases)
+        )
 
-        # Check for specific legal language patterns
-        if any(phrase in text.lower() for phrase in legal_keywords) or any(phrase in text.lower() for phrase in legal_phrases):
-            legal_terms.append(text)
+        # Prepare the paragraph entry
+        para_entry = {
+            "text": text,
+            "is_legal_term": is_legal_term
+        }
 
-    return legal_terms
+        # If it's a legal term, add to legal terms
+        if is_legal_term:
+            legal_terms.append(para_entry)
+
+        # Add to document structure
+        document_structure.append(para_entry)
+
+    return {
+        "legal_terms": legal_terms,
+        "document_structure": document_structure
+    }
 
 
 if __name__ == "__main__":
     file_path = "test_t&c_s/sample_terms_conditions.docx"
 
     if os.path.exists(file_path):
-        terms = process_uploaded_file(file_path)
-        print('-----------------------------------')
-        for term in terms:
-            print(term)
+        result = process_uploaded_file(file_path)
+        
+        print("Legal Terms:")
+        for term in result['legal_terms']:
+            print(term['text'])
             print()
-        print("Number of terms: ",len(terms))
+        
+        print("\nFull Document Structure:")
+        for para in result['document_structure']:
+            print(f"{'[LEGAL]' if para['is_legal_term'] else '[REGULAR]'} {para['text']}")
+        
+        print("\nNumber of legal terms: ", len(result['legal_terms']))
     else:
         print(f"Error: The file {file_path} does not exist.")

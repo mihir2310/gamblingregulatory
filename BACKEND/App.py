@@ -66,9 +66,8 @@ def load():
 
 
 # Route to handle document upload and violation checking
-@app.route('/scan-doc', methods=['POST', 'OPTIONS'])  # Allow OPTIONS method
+@app.route('/scan-doc', methods=['POST', 'OPTIONS'])
 def scan_doc():
-    print('attempting')
     if request.method == 'OPTIONS':
         response = app.response_class(
             response='',
@@ -96,20 +95,17 @@ def scan_doc():
             file.save(temp_file.name)
             temp_file_path = temp_file.name
 
-        # Process the uploaded file to extract the terms
-        terms = process_uploaded_file(temp_file_path)
-        if not terms:
-            return jsonify({"error": "Failed to extract terms from the document"}), 400
-
-        print("Terms extracted:", terms)  # Debugging line
-
+        # Process the uploaded file to extract the terms and document structure
+        document_result = process_uploaded_file(temp_file_path)
+        
         # Extract market_type and state_or_federal from the form data
         market_type = request.form.get('market_type', 'sportsbooks')
         state_or_federal = request.form.get('state_or_federal', 'federal')
 
         results = []
-        for term in terms:
-
+        # Only scan legal terms
+        for term_entry in document_result['legal_terms']:
+            term = term_entry['text']
             # Get relevant laws from AI algorithms
             relevant_laws = GETRELEVANTLAWS(term, market_type, state_or_federal)
 
@@ -118,7 +114,7 @@ def scan_doc():
                 try:
                     relevant_laws = json.loads(relevant_laws)
                 except json.JSONDecodeError:
-                    print(f"Error decoding JSON for term: {term}.  Raw value: {relevant_laws}")
+                    print(f"Error decoding JSON for term: {term}. Raw value: {relevant_laws}")
                     relevant_laws = []  # Or handle the error appropriately
 
             # Check for violations
@@ -126,7 +122,8 @@ def scan_doc():
 
             results.append({
                 "term": term,
-                "violations": violation_results
+                "violations": violation_results,
+                "document_structure": document_result['document_structure']
             })
 
         return jsonify(results)
