@@ -5,6 +5,7 @@ import {
   Stack,
   IconButton,
   Tabs,
+  CircularProgress,
   Tab,
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon } from '@mui/icons-material';
@@ -60,36 +61,35 @@ const Filepage = () => {
     const market_type = 'sportsbooks';
     const state_or_federal = 'federal';
     const file = event.target.files[0];
-
+  
     if (file) {
       if (file.name.endsWith('.docx')) {
         if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
           try {
-            setIsLoading(true);
+            setIsLoading(true); // Show loading spinner
             const formData = new FormData();
             formData.append('file', file);
             formData.append('market_type', market_type);
             formData.append('state_or_federal', state_or_federal);
-
+  
             const response = await fetch('/api/scan-doc', {
               method: 'POST',
               body: formData,
             });
-
+  
             if (!response.ok) {
               const errorData = await response.json();
               alert(`Error: ${errorData.error}`);
-              setIsLoading(false);
               return;
             }
-
+  
             const resultData = await response.json();
             setScanResult(resultData);
             setDocumentStructure(resultData[0]?.document_structure || null);
-
+  
             const fileContent = await readDocxFile(file);
             setSelectedFileContent(fileContent);
-
+  
             await fetch('/api/documents', {
               method: 'POST',
               headers: {
@@ -101,7 +101,7 @@ const Filepage = () => {
                 scan_result: resultData,
               }),
             });
-
+  
             setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
             navigate(
               `/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`
@@ -110,7 +110,7 @@ const Filepage = () => {
             console.error('Fetch error:', error);
             alert(`Fetch error: ${error.message}`);
           } finally {
-            setIsLoading(false);
+            setIsLoading(false); // Hide loading spinner
           }
         } else {
           alert('This file has already been uploaded.');
@@ -120,6 +120,7 @@ const Filepage = () => {
       }
     }
   };
+  
 
   const handleTermClick = (term) => {
     const matchingScanResult = scanResult?.find((result) => result.term === term.text);
@@ -185,15 +186,25 @@ const Filepage = () => {
         }}
       >
         <Stack spacing={2}>
-          <Button
-            variant="contained"
-            startIcon={<PlayArrowIcon />}
-            component="label"
-            sx={{ borderRadius: '8px' }}
-          >
-            Scan .docx File
-            <input type="file" hidden accept=".docx" onChange={handleFileUpload} />
-          </Button>
+        <Button
+          variant="contained"
+          startIcon={!isLoading && <PlayArrowIcon />} // Show the icon only when not loading
+          component="label"
+          sx={{ borderRadius: '8px' }}
+          disabled={isLoading} // Disable the button during loading
+        >
+          {isLoading ? (
+            <CircularProgress size={24} sx={{ color: 'white' }} /> // Show loading spinner
+          ) : (
+            'Scan .docx File'
+          )}
+          <input
+            type="file"
+            hidden
+            accept=".docx"
+            onChange={handleFileUpload}
+          />
+        </Button>
         </Stack>
       </Box>
 
