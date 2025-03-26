@@ -24,7 +24,7 @@ const Filepage = () => {
   const [scanResult, setScanResult] = useState(null);
   const [documentStructure, setDocumentStructure] = useState(null);
   const [highlightedTerm, setHighlightedTerm] = useState(null);
-  const [resizeRatio, setResizeRatio] = useState(0.5);
+  const [resizeRatio, setResizeRatio] = useState(0.5); // 50/50 split by default
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [expandedViolation, setExpandedViolation] = useState(null);
@@ -51,11 +51,8 @@ const Filepage = () => {
   // Handle loading a previously scanned document when navigating back
   useEffect(() => {
     if (documentFromState) {
-      // If a document is passed in state, restore its content and scan results
       setSelectedFileContent(documentFromState.content);
       setScanResult(documentFromState.scan_result);
-      
-      // Attempt to parse document structure from scan result
       const structure = documentFromState.scan_result?.[0]?.document_structure || null;
       setDocumentStructure(structure);
     }
@@ -67,7 +64,6 @@ const Filepage = () => {
     const updatedProjects = projects.map(p => 
       p.name === project.name ? { ...p, documents } : p
     );
-    
     localStorage.setItem('projects', JSON.stringify(updatedProjects));
     setUploadedFiles(documents);
   };
@@ -123,14 +119,12 @@ const Filepage = () => {
             const fileContent = await readDocxFile(file);
             setSelectedFileContent(fileContent);
   
-            // Create a document object to store
             const newDocument = {
               name: file.name,
               content: fileContent,
               scan_result: resultData,
             };
-
-            // Update project documents in localStorage
+  
             const updatedDocuments = [newDocument, ...uploadedFiles].slice(0, 10);
             updateProjectDocuments(updatedDocuments);
   
@@ -152,19 +146,17 @@ const Filepage = () => {
       }
     }
   };
-  
 
   const handleTermClick = (term) => {
     const matchingScanResult = scanResult?.find((result) => result.term === term.text);
-
     setHighlightedTerm({
       ...term,
       violations: matchingScanResult?.violations || [],
     });
-
     setActiveTab(0);
   };
 
+  // Resizer slider handlers
   const handleResizeStart = (e) => {
     e.preventDefault();
     isDraggingRef.current = true;
@@ -174,14 +166,12 @@ const Filepage = () => {
 
   const handleResize = (e) => {
     if (!isDraggingRef.current || !containerRef.current) return;
-
     const containerRect = containerRef.current.getBoundingClientRect();
-    const relativeX = e.clientX - containerRect.left;
+    // Subtract the slider width (12px) from the total container width
     const containerWidth = containerRect.width - 12;
-
+    const relativeX = e.clientX - containerRect.left;
     let newRatio = relativeX / containerWidth;
     newRatio = Math.max(0.02, Math.min(0.98, newRatio));
-
     setResizeRatio(newRatio);
   };
 
@@ -198,269 +188,272 @@ const Filepage = () => {
     };
   }, []);
 
+  // Compute unique law names from the highlighted term (if available)
   const uniqueLawNames = highlightedTerm?.violations
     ? [...new Set(highlightedTerm.violations.map((v) => v['Law Name']))]
     : [];
 
-    return (
-      <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
-        {/* Sidebar */}
-        <Box
-          sx={{
-            width: '250px',
-            flexShrink: 0,
-            backgroundColor: '#f5f5f5',
-            padding: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            overflowY: 'auto',
-            borderRight: '1px solid #ddd',
-          }}
-        >
-          <Stack spacing={2}>
-            <Typography variant="h6" sx={{ marginBottom: '16px' }}>
-              {project_name}
-            </Typography>
-            <Button
-              variant="contained"
-              startIcon={!isLoading && <PlayArrowIcon />}
-              component="label"
-              sx={{ borderRadius: '8px' }}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <CircularProgress size={24} sx={{ color: 'white' }} />
-              ) : (
-                'Scan .docx File'
-              )}
-              <input
-                type="file"
-                hidden
-                accept=".docx"
-                onChange={handleFileUpload}
-              />
-            </Button>
-  
-            {/* List of uploaded files for this project */}
-            <List>
-              {uploadedFiles.map((doc, index) => (
-                <ListItem key={index} disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      navigate(
-                        `/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(doc.name)}`,
-                        { state: { document: doc, project } }
-                      );
-                    }}
-                  >
-                    <ListItemText primary={doc.name} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Stack>
-        </Box>
-
-      {/* Main Content */}
-      <Box ref={containerRef} sx={{ display: 'flex', height: '100vh', flexGrow: 1, position: 'relative' }}>
-        {/* Violations Panel */}
-        <Box
-          sx={{
-            width: `${resizeRatio * 100}%`,
-            maxWidth: '600px',
-            display: 'flex',
-            flexDirection: 'column',
-            border: '1px solid #ddd',
-            padding: '24px',
-            backgroundColor: '#f0f0f0',
-            overflowY: 'auto',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            position: 'relative',
-          }}
-        >
-          {highlightedTerm && highlightedTerm.violations ? (
-  <Box>
-    <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
-      Violations for: {highlightedTerm.text}
-    </Typography>
-
-    {highlightedTerm.violations.length > 0 ? (
-      <>
-        <Tabs
-          value={activeTab}
-          onChange={(e, newValue) => setActiveTab(newValue)}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{
-            borderBottom: '1px solid #ddd',
-            marginBottom: '16px',
-            width: '100%',
-          }}
-        >
-          {uniqueLawNames.map((lawName, index) => (
-            <Tab
-              key={lawName}
-              label={lawName}
-              sx={{
-                textTransform: 'none',
-                maxWidth: '200px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            />
-          ))}
-        </Tabs>
-
-        <Box sx={{ maxHeight: 'calc(100% - 100px)', overflowY: 'auto' }}>
-          {uniqueLawNames.map(
-            (lawName, index) =>
-              activeTab === index && (
-                <Box key={lawName}>
-                  {(() => {
-                    const violationsForLaw = highlightedTerm.violations
-                      .filter((v) => v['Law Name'] === lawName);
-                    
-                    const hasYesViolations = violationsForLaw.some(
-                      (v) => v['Violation'] === 'Yes'
-                    );
-
-                    if (!hasYesViolations) {
-                      return (
-                        <Typography 
-                          variant="body1" 
-                          color="textSecondary" 
-                          sx={{ textAlign: 'center', padding: '16px' }}
-                        >
-                          No violations flagged for this law
-                        </Typography>
-                      );
-                    }
-
-                    return violationsForLaw
-                      .filter((v) => v['Violation'] === 'Yes')
-                      .map((violation, vIndex) => (
-                        <Box
-                          key={vIndex}
-                          sx={{
-                            marginBottom: '16px',
-                            padding: '12px',
-                            backgroundColor: 'white',
-                            borderRadius: '4px',
-                          }}
-                          onClick={() =>
-                            setExpandedViolation((prev) =>
-                              prev === vIndex ? null : vIndex
-                            )
-                          }
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            fontWeight="bold"
-                            color="primary"
-                            sx={{ marginBottom: '8px' }}
-                          >
-                            {violation['Category']}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              textOverflow:
-                                expandedViolation === vIndex ? 'unset' : 'ellipsis',
-                              overflow:
-                                expandedViolation === vIndex
-                                  ? 'visible'
-                                  : 'hidden',
-                              whiteSpace:
-                                expandedViolation === vIndex
-                                  ? 'normal'
-                                  : 'nowrap',
-                              width: '100%',
-                            }}
-                          >
-                            {violation['Law Text']}
-                          </Typography>
-
-                          {/* Explanation below the law text */}
-                          {violation['Explanation'] && (
-                            <>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  marginTop: '8px',
-                                }}
-                              >
-                                Why this is a violation:
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  marginTop: '4px',
-                                }}
-                              >
-                                {violation['Explanation']}
-                              </Typography>
-                            </>
-                          )}
-                        </Box>
-                      ));
-                  })()}
-                </Box>
-              )
-          )}
-        </Box>
-      </>
-    ) : (
-      <Typography variant="body1" color="textSecondary">
-        No violations flagged!
-      </Typography>
-    )}
-  </Box>
-) : (
-  <Typography variant="h6" color="textSecondary">
-    Click a term to view violations
-  </Typography>
-)}
-      </Box>
-
-      {/* Document Preview */}
+  return (
+    <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+      {/* Sidebar */}
       <Box
         sx={{
-          width: `${(1 - resizeRatio) * 100}%`,
-          border: '1px solid #ddd',
-          borderRadius: '10px',
-          padding: '24px',
-          backgroundColor: '#fff',
+          width: '250px',
+          flexShrink: 0,
+          backgroundColor: '#f5f5f5',
+          padding: 2,
+          display: 'flex',
+          flexDirection: 'column',
           overflowY: 'auto',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-          marginLeft: '6px',
-          minWidth: '100px',
+          borderRight: '1px solid #ddd',
         }}
       >
-        {documentStructure ? (
-          documentStructure.map((para, index) => (
-            <Typography
-              key={index}
-              onClick={() => para.is_legal_term && handleTermClick(para)}
-              sx={{
-                cursor: para.is_legal_term ? 'pointer' : 'default',
-                color: para.is_legal_term ? 'blue' : 'black',
-                textDecoration: para.is_legal_term ? 'underline' : 'none',
-                marginBottom: '8px',
-              }}
-            >
-              {para.text}
-            </Typography>
-          ))
-        ) : (
-          <Typography style={{ color: 'gray', textAlign: 'center' }}>
-            No file selected
+        <Stack spacing={2}>
+          <Typography variant="h6" sx={{ marginBottom: '16px' }}>
+            {project_name}
           </Typography>
-        )}
+          <Button
+            variant="contained"
+            startIcon={!isLoading && <PlayArrowIcon />}
+            component="label"
+            sx={{ borderRadius: '8px' }}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <CircularProgress size={24} sx={{ color: 'white' }} />
+            ) : (
+              'Scan .docx File'
+            )}
+            <input type="file" hidden accept=".docx" onChange={handleFileUpload} />
+          </Button>
+
+          {/* List of uploaded files for this project */}
+          <List>
+            {uploadedFiles.map((doc, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    navigate(
+                      `/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(doc.name)}`,
+                      { state: { document: doc, project } }
+                    );
+                  }}
+                >
+                  <ListItemText primary={doc.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Stack>
+      </Box>
+
+      {/* Main Content */}
+      <Box
+        ref={containerRef}
+        sx={{
+          display: 'flex',
+          height: '100vh',
+          flexGrow: 1,
+          position: 'relative',
+        }}
+      >
+        {/* Violations Panel */}
+        <Box
+  sx={{
+    width: `${resizeRatio * 100}%`,
+    // Removed maxWidth to allow expansion
+    display: 'flex',
+    flexDirection: 'column',
+    border: '1px solid #ddd',
+    padding: '24px',
+    backgroundColor: '#f0f0f0',
+    overflowY: 'auto',
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+    position: 'relative',
+  }}
+>
+          {highlightedTerm && highlightedTerm.violations ? (
+            <Box>
+              <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
+                Violations for: {highlightedTerm.text}
+              </Typography>
+
+              {highlightedTerm.violations.length > 0 ? (
+                <>
+                  <Tabs
+                    value={activeTab}
+                    onChange={(e, newValue) => setActiveTab(newValue)}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    sx={{
+                      borderBottom: '1px solid #ddd',
+                      marginBottom: '16px',
+                      width: '100%',
+                    }}
+                  >
+                    {uniqueLawNames.map((lawName, index) => (
+                      <Tab
+                        key={lawName}
+                        label={lawName}
+                        sx={{
+                          textTransform: 'none',
+                          maxWidth: '200px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      />
+                    ))}
+                  </Tabs>
+
+                  <Box sx={{ maxHeight: 'calc(100% - 100px)', overflowY: 'auto' }}>
+                    {uniqueLawNames.map(
+                      (lawName, index) =>
+                        activeTab === index && (
+                          <Box key={lawName}>
+                            {(() => {
+                              const violationsForLaw = highlightedTerm.violations.filter(
+                                (v) => v['Law Name'] === lawName
+                              );
+                              const hasYesViolations = violationsForLaw.some(
+                                (v) => v['Violation'] === 'Yes'
+                              );
+
+                              if (!hasYesViolations) {
+                                return (
+                                  <Typography
+                                    variant="body1"
+                                    color="textSecondary"
+                                    sx={{ textAlign: 'center', padding: '16px' }}
+                                  >
+                                    No violations flagged for this law
+                                  </Typography>
+                                );
+                              }
+
+                              return violationsForLaw
+                                .filter((v) => v['Violation'] === 'Yes')
+                                .map((violation, vIndex) => (
+                                  <Box
+                                    key={vIndex}
+                                    sx={{
+                                      marginBottom: '16px',
+                                      padding: '12px',
+                                      backgroundColor: 'white',
+                                      borderRadius: '4px',
+                                    }}
+                                    onClick={() =>
+                                      setExpandedViolation((prev) =>
+                                        prev === vIndex ? null : vIndex
+                                      )
+                                    }
+                                  >
+                                    <Typography
+                                      variant="subtitle1"
+                                      fontWeight="bold"
+                                      color="primary"
+                                      sx={{ marginBottom: '8px' }}
+                                    >
+                                      {violation['Category']}
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        textOverflow:
+                                          expandedViolation === vIndex ? 'unset' : 'ellipsis',
+                                        overflow:
+                                          expandedViolation === vIndex ? 'visible' : 'hidden',
+                                        whiteSpace:
+                                          expandedViolation === vIndex ? 'normal' : 'nowrap',
+                                        width: '100%',
+                                      }}
+                                    >
+                                      {violation['Law Text']}
+                                    </Typography>
+
+                                    {/* Explanation below the law text */}
+                                    {violation['Explanation'] && (
+                                      <>
+                                        <Typography
+                                          variant="body2"
+                                          sx={{ fontWeight: 'bold', marginTop: '8px' }}
+                                        >
+                                          Why this is a violation:
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ marginTop: '4px' }}>
+                                          {violation['Explanation']}
+                                        </Typography>
+                                      </>
+                                    )}
+                                  </Box>
+                                ));
+                            })()}
+                          </Box>
+                        )
+                    )}
+                  </Box>
+                </>
+              ) : (
+                <Typography variant="body1" color="textSecondary">
+                  No violations flagged!
+                </Typography>
+              )}
+            </Box>
+          ) : (
+            <Typography variant="h6" color="textSecondary">
+              Click a term to view violations
+            </Typography>
+          )}
+        </Box>
+
+        {/* Resizer Slider */}
+        <Box
+          onMouseDown={handleResizeStart}
+          sx={{
+            width: '12px',
+            cursor: 'col-resize',
+            backgroundColor: 'grey.300',
+            '&:hover': { backgroundColor: 'grey.500' },
+          }}
+        />
+
+        {/* Document Preview Panel */}
+        <Box
+          sx={{
+            width: `${(1 - resizeRatio) * 100}%`,
+            border: '1px solid #ddd',
+            borderRadius: '10px',
+            padding: '24px',
+            backgroundColor: '#fff',
+            overflowY: 'auto',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            marginLeft: '6px',
+            minWidth: '100px',
+          }}
+        >
+          {documentStructure ? (
+            documentStructure.map((para, index) => (
+              <Typography
+                key={index}
+                onClick={() => para.is_legal_term && handleTermClick(para)}
+                sx={{
+                  cursor: para.is_legal_term ? 'pointer' : 'default',
+                  color: para.is_legal_term ? 'blue' : 'black',
+                  textDecoration: para.is_legal_term ? 'underline' : 'none',
+                  marginBottom: '8px',
+                }}
+              >
+                {para.text}
+              </Typography>
+            ))
+          ) : (
+            <Typography style={{ color: 'gray', textAlign: 'center' }}>
+              No file selected
+            </Typography>
+          )}
+        </Box>
       </Box>
     </Box>
-  </Box>
-);
+  );
 };
 
 export default Filepage;
