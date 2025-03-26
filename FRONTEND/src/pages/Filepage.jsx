@@ -226,127 +226,148 @@ const Filepage = () => {
           }}
         >
           {highlightedTerm && highlightedTerm.violations ? (
-            <Box>
-              <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
-                Violations for: {highlightedTerm.text}
-              </Typography>
+  <Box>
+    <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
+      Violations for: {highlightedTerm.text}
+    </Typography>
 
-              {highlightedTerm.violations.length > 0 ? (
-                <>
-                  <Tabs
-                    value={activeTab}
-                    onChange={(e, newValue) => setActiveTab(newValue)}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    sx={{
-                      borderBottom: '1px solid #ddd',
-                      marginBottom: '16px',
-                      width: '100%',
-                    }}
-                  >
-                    {uniqueLawNames.map((lawName, index) => (
-                      <Tab
-                        key={lawName}
-                        label={lawName}
-                        sx={{
-                          textTransform: 'none',
-                          maxWidth: '200px',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      />
-                    ))}
-                  </Tabs>
+    {highlightedTerm.violations.length > 0 ? (
+      <>
+        <Tabs
+          value={activeTab}
+          onChange={(e, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            borderBottom: '1px solid #ddd',
+            marginBottom: '16px',
+            width: '100%',
+          }}
+        >
+          {uniqueLawNames.map((lawName, index) => (
+            <Tab
+              key={lawName}
+              label={lawName}
+              sx={{
+                textTransform: 'none',
+                maxWidth: '200px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            />
+          ))}
+        </Tabs>
 
-                  <Box sx={{ maxHeight: 'calc(100% - 100px)', overflowY: 'auto' }}>
-                    {uniqueLawNames.map(
-                      (lawName, index) =>
-                        activeTab === index && (
-                          <Box key={lawName}>
-                            {highlightedTerm.violations
-                              .filter((v) => v['Law Name'] === lawName && v['Violation'] === 'Yes')
-                              .map((violation, vIndex) => (
-                                <Box
-                                  key={vIndex}
-                                  sx={{
-                                    marginBottom: '16px',
-                                    padding: '12px',
-                                    backgroundColor: 'white',
-                                    borderRadius: '4px',
-                                  }}
-                                  onClick={() =>
-                                    setExpandedViolation((prev) =>
-                                      prev === vIndex ? null : vIndex
-                                    )
-                                  }
-                                >
-                                  <Typography
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                    color="primary"
-                                    sx={{ marginBottom: '8px' }}
-                                  >
-                                    {violation['Category']}
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{
-                                      textOverflow:
-                                        expandedViolation === vIndex ? 'unset' : 'ellipsis',
-                                      overflow:
-                                      expandedViolation === vIndex
-                                      ? 'visible'
-                                      : 'hidden',
-                                    whiteSpace:
-                                      expandedViolation === vIndex
-                                        ? 'normal'
-                                        : 'nowrap',
-                                    width: '100%',
-                                  }}
-                                >
-                                  {violation['Law Text']}
-                                </Typography>
+        <Box sx={{ maxHeight: 'calc(100% - 100px)', overflowY: 'auto' }}>
+          {uniqueLawNames.map(
+            (lawName, index) =>
+              activeTab === index && (
+                <Box key={lawName}>
+                  {(() => {
+                    const violationsForLaw = highlightedTerm.violations
+                      .filter((v) => v['Law Name'] === lawName);
+                    
+                    const hasYesViolations = violationsForLaw.some(
+                      (v) => v['Violation'] === 'Yes'
+                    );
 
-                                {/* Explanation below the law text */}
-                                {violation['Explanation'] && (
-                                  <>
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        fontWeight: 'bold',
-                                        marginTop: '8px',
-                                      }}
-                                    >
-                                      Why this is a violation:
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        marginTop: '4px',
-                                      }}
-                                    >
-                                      {violation['Explanation']}
-                                    </Typography>
-                                  </>
-                                )}
-                              </Box>
-                            ))}
+                    if (!hasYesViolations) {
+                      return (
+                        <Typography 
+                          variant="body1" 
+                          color="textSecondary" 
+                          sx={{ textAlign: 'center', padding: '16px' }}
+                        >
+                          No violations flagged for this law
+                        </Typography>
+                      );
+                    }
+
+                    return violationsForLaw
+                      .filter((v) => v['Violation'] === 'Yes')
+                      .map((violation, vIndex) => (
+                        <Box
+                          key={vIndex}
+                          sx={{
+                            marginBottom: '16px',
+                            padding: '12px',
+                            backgroundColor: 'white',
+                            borderRadius: '4px',
+                          }}
+                          onClick={() =>
+                            setExpandedViolation((prev) =>
+                              prev === vIndex ? null : vIndex
+                            )
+                          }
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            color="primary"
+                            sx={{ marginBottom: '8px' }}
+                          >
+                            {violation['Category']}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              textOverflow:
+                                expandedViolation === vIndex ? 'unset' : 'ellipsis',
+                              overflow:
+                                expandedViolation === vIndex
+                                  ? 'visible'
+                                  : 'hidden',
+                              whiteSpace:
+                                expandedViolation === vIndex
+                                  ? 'normal'
+                                  : 'nowrap',
+                              width: '100%',
+                            }}
+                          >
+                            {violation['Law Text']}
+                          </Typography>
+
+                          {/* Explanation below the law text */}
+                          {violation['Explanation'] && (
+                            <>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  marginTop: '8px',
+                                }}
+                              >
+                                Why this is a violation:
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  marginTop: '4px',
+                                }}
+                              >
+                                {violation['Explanation']}
+                              </Typography>
+                            </>
+                          )}
                         </Box>
-                      )
-                  )}
+                      ));
+                  })()}
                 </Box>
-              </>
-            ) : (
-              <Typography variant="body1" color="textSecondary">
-                No violations flagged!
-              </Typography>
-            )}
-          </Box>
-        ) : (
-          <Typography variant="h6" color="textSecondary">
-            Click a term to view violations
-          </Typography>
-        )}
+              )
+          )}
+        </Box>
+      </>
+    ) : (
+      <Typography variant="body1" color="textSecondary">
+        No violations flagged!
+      </Typography>
+    )}
+  </Box>
+) : (
+  <Typography variant="h6" color="textSecondary">
+    Click a term to view violations
+  </Typography>
+)}
       </Box>
 
       {/* Document Preview */}
