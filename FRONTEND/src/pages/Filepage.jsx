@@ -34,6 +34,7 @@ const Filepage = () => {
 
   const location = useLocation();
   const project = location.state?.project;
+  const documentFromState = location.state?.document;
 
   // Load project documents from localStorage
   useEffect(() => {
@@ -46,6 +47,19 @@ const Filepage = () => {
       }
     }
   }, [project]);
+
+  // Handle loading a previously scanned document when navigating back
+  useEffect(() => {
+    if (documentFromState) {
+      // If a document is passed in state, restore its content and scan results
+      setSelectedFileContent(documentFromState.content);
+      setScanResult(documentFromState.scan_result);
+      
+      // Attempt to parse document structure from scan result
+      const structure = documentFromState.scan_result?.[0]?.document_structure || null;
+      setDocumentStructure(structure);
+    }
+  }, [documentFromState]);
 
   // Update localStorage when documents change
   const updateProjectDocuments = (documents) => {
