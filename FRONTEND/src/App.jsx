@@ -53,7 +53,7 @@ function App() {
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ padding: 3, marginTop: '64px' }}>
+      <Box sx={{ padding: 3, marginTop: '64px' }} className="bg-blue-500 text-white p-4 text-xl">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />

@@ -62,7 +62,9 @@ def save_docs():
 def load():
     print('loading')
     data = load_data()
-    return data
+    response = jsonify(data)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 # Route to handle document upload and violation checking

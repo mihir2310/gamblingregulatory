@@ -12,7 +12,7 @@ function Login({ onLogin }) {
     if (username === 'admin' && password === 'admin') {
       onLogin();
       console.log('trying axios');
-      const docs = await axios.get('/api/load');
+      const docs = await axios.get('/load');
       console.log('axios worked');
       navigate('/dashboard', { state: { documents: docs.data } });
     } else {
