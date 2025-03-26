@@ -259,19 +259,19 @@ const Filepage = () => {
       >
         {/* Violations Panel */}
         <Box
-  sx={{
-    width: `${resizeRatio * 100}%`,
-    // Removed maxWidth to allow expansion
-    display: 'flex',
-    flexDirection: 'column',
-    border: '1px solid #ddd',
-    padding: '24px',
-    backgroundColor: '#f0f0f0',
-    overflowY: 'auto',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-    position: 'relative',
-  }}
->
+          sx={{
+            width: `${resizeRatio * 100}%`,
+            // Removed maxWidth to allow expansion
+            display: 'flex',
+            flexDirection: 'column',
+            border: '1px solid #ddd',
+            padding: '24px',
+            backgroundColor: '#f0f0f0',
+            overflowY: 'auto',
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+            position: 'relative',
+          }}
+        >
           {highlightedTerm && highlightedTerm.violations ? (
             <Box>
               <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
