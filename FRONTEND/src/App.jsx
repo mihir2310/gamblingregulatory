@@ -24,7 +24,9 @@ function App() {
       <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Alea
+            <Button color="inherit" component={Link} to="/">
+              Alea
+            </Button>
           </Typography>
           {isAuthenticated ? (
             <>
@@ -34,7 +36,7 @@ function App() {
               <Button color="inherit" component={Link} to="/dashboard">
                 Dashboard
               </Button>
-              <Button color="inherit" onClick={handleLogout}>
+              <Button color="inherit" component={Link} to="/" onClick={handleLogout}>
                 Logout
               </Button>
             </>
