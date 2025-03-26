@@ -16,72 +16,64 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
 function Dashboard() {
-  const [documents, setDocuments] = useState([]);
-  const [editingDocIndex, setEditingDocIndex] = useState(null);
-  const [newDocName, setNewDocName] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [editingProjectIndex, setEditingProjectIndex] = useState(null);
+  const [newProjectName, setNewProjectName] = useState('');
   const inputRef = useRef(null);
   const location = useLocation();
 
-  // ✅ Load documents from localStorage on mount
+  // Load projects from localStorage on mount
   useEffect(() => {
-  const stateDocs = location.state?.documents;
-  const storedDocs = JSON.parse(localStorage.getItem('documents')) || [];
+    const storedProjects = JSON.parse(localStorage.getItem('projects')) || [];
+    setProjects(storedProjects);
+  }, []);
 
-  const initialDocs = stateDocs || storedDocs;
-
-  setDocuments(initialDocs);
-
-  console.log(stateDocs)
-
-  // ✅ Persist stateDocs to localStorage if passed in
-  if (stateDocs) {
-    localStorage.setItem('documents', JSON.stringify(stateDocs));
-  }
-}, [location.state]);
-
-  // ✅ Save documents to localStorage whenever they change
-  const saveDocuments = (docs) => {
-    setDocuments(docs);
-    localStorage.setItem('documents', JSON.stringify(docs));
+  // Save projects to localStorage whenever they change
+  const saveProjects = (updatedProjects) => {
+    setProjects(updatedProjects);
+    localStorage.setItem('projects', JSON.stringify(updatedProjects));
   };
 
-  const handleCreateNewDocument = () => {
-    const defaultName = `Untitled-${documents.length + 1}`;
-    const newDoc = { name: defaultName };
-    const updatedDocs = [newDoc, ...documents];
-    saveDocuments(updatedDocs);
-    setEditingDocIndex(0);
-    setNewDocName(defaultName);
+  const handleCreateNewProject = () => {
+    const defaultName = `Untitled-${projects.length + 1}`;
+    const newProject = { 
+      name: defaultName, 
+      documents: [] 
+    };
+    const updatedProjects = [newProject, ...projects];
+    saveProjects(updatedProjects);
+    setEditingProjectIndex(0);
+    setNewProjectName(defaultName);
   };
 
-  const handleRenameDocument = (index) => {
-    if (newDocName.trim() === '') {
-      alert('Document name cannot be empty.');
+  const handleRenameProject = (index) => {
+    if (newProjectName.trim() === '') {
+      alert('Project name cannot be empty.');
       return;
     }
-    const updatedDocs = documents.map((doc, i) =>
-      i === index ? { ...doc, name: newDocName } : doc
+    const updatedProjects = projects.map((project, i) =>
+      i === index ? { ...project, name: newProjectName } : project
     );
-    saveDocuments(updatedDocs);
-    setEditingDocIndex(null);
+    saveProjects(updatedProjects);
+    setEditingProjectIndex(null);
   };
 
-  const handleDocRemove = (index) => {
-    const updatedDocs = documents.filter((_, i) => i !== index);
-    saveDocuments(updatedDocs);
-    setEditingDocIndex(null);
+  const handleProjectRemove = (index) => {
+    const updatedProjects = projects.filter((_, i) => i !== index);
+    saveProjects(updatedProjects);
+    setEditingProjectIndex(null);
   };
 
-  // 🔥 Auto-focus on rename input
+  // Auto-focus on rename input
   useEffect(() => {
-    if (editingDocIndex !== null && inputRef.current) {
+    if (editingProjectIndex !== null && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [editingDocIndex]);
+  }, [editingProjectIndex]);
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
-      {/* Sidebar with Create New */}
+      {/* Sidebar with Create New Project */}
       <Box
         sx={{
           width: '250px',
@@ -96,35 +88,35 @@ function Dashboard() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={handleCreateNewDocument}
+            onClick={handleCreateNewProject}
             sx={{ borderRadius: '8px' }}
           >
-            Create New Document
+            Create New Project
           </Button>
 
           <List>
-            {documents.map((doc, index) => (
+            {projects.map((project, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  {editingDocIndex === index ? (
+                  {editingProjectIndex === index ? (
                     <>
                       <TextField
                         inputRef={inputRef}
-                        value={newDocName}
-                        onChange={(e) => setNewDocName(e.target.value)}
+                        value={newProjectName}
+                        onChange={(e) => setNewProjectName(e.target.value)}
                         size="small"
                         sx={{ flexGrow: 1 }}
-                        onKeyDown={(e) => e.key === 'Enter' && handleRenameDocument(index)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleRenameProject(index)}
                       />
-                      <IconButton color="primary" onClick={() => handleRenameDocument(index)}>
+                      <IconButton color="primary" onClick={() => handleRenameProject(index)}>
                         <CheckIcon />
                       </IconButton>
                     </>
                   ) : (
                     <>
                       <Link
-                        to={`/dashboard/${encodeURIComponent(doc.name)}`}
-                        state={{ document: doc }}
+                        to={`/dashboard/${encodeURIComponent(project.name)}`}
+                        state={{ project: project }}
                         style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
                       >
                         <ListItemText
@@ -134,10 +126,10 @@ function Dashboard() {
                             textOverflow: 'ellipsis',
                             maxWidth: '150px', 
                           }}
-                          primary={doc.name}
+                          primary={project.name}
                         />
                       </Link>
-                      <IconButton color="error" onClick={() => handleDocRemove(index)}>
+                      <IconButton color="error" onClick={() => handleProjectRemove(index)}>
                         <CloseIcon />
                       </IconButton>
                     </>
@@ -176,7 +168,7 @@ function Dashboard() {
             Dashboard
           </Typography>
           <Typography variant="body1">
-            Manage your projects and compliance data all in one place. Click on a document to start working.
+            Create a new project or select an existing one to manage your documents.
           </Typography>
         </Container>
       </Box>

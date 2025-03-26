@@ -7,6 +7,10 @@ import {
   Tabs,
   CircularProgress,
   Tab,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
 } from '@mui/material';
 import { PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -14,7 +18,7 @@ import { useState, useRef, useEffect } from 'react';
 import mammoth from 'mammoth';
 
 const Filepage = () => {
-  const { project_name, fileName } = useParams();
+  const { project_name } = useParams();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState('');
   const [scanResult, setScanResult] = useState(null);
@@ -29,15 +33,30 @@ const Filepage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const doc = location.state?.document;
+  const project = location.state?.project;
 
+  // Load project documents from localStorage
   useEffect(() => {
-    if (location.state?.document) {
-      setSelectedFileContent(doc.content);
-      setScanResult(doc.scan_result);
-      setDocumentStructure(doc.scan_result?.[0]?.document_structure);
+    if (project) {
+      const projects = JSON.parse(localStorage.getItem('projects')) || [];
+      const currentProject = projects.find(p => p.name === project.name);
+      
+      if (currentProject) {
+        setUploadedFiles(currentProject.documents || []);
+      }
     }
-  }, [location.state]);
+  }, [project]);
+
+  // Update localStorage when documents change
+  const updateProjectDocuments = (documents) => {
+    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+    const updatedProjects = projects.map(p => 
+      p.name === project.name ? { ...p, documents } : p
+    );
+    
+    localStorage.setItem('projects', JSON.stringify(updatedProjects));
+    setUploadedFiles(documents);
+  };
 
   const readDocxFile = async (file) => {
     return new Promise((resolve, reject) => {
@@ -66,7 +85,7 @@ const Filepage = () => {
       if (file.name.endsWith('.docx')) {
         if (!uploadedFiles.some((uploadedFile) => uploadedFile.name === file.name)) {
           try {
-            setIsLoading(true); // Show loading spinner
+            setIsLoading(true);
             const formData = new FormData();
             formData.append('file', file);
             formData.append('market_type', market_type);
@@ -90,27 +109,26 @@ const Filepage = () => {
             const fileContent = await readDocxFile(file);
             setSelectedFileContent(fileContent);
   
-            await fetch('/api/documents', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                name: file.name,
-                content: fileContent,
-                scan_result: resultData,
-              }),
-            });
+            // Create a document object to store
+            const newDocument = {
+              name: file.name,
+              content: fileContent,
+              scan_result: resultData,
+            };
+
+            // Update project documents in localStorage
+            const updatedDocuments = [newDocument, ...uploadedFiles].slice(0, 10);
+            updateProjectDocuments(updatedDocuments);
   
-            setUploadedFiles((prevFiles) => [file, ...prevFiles].slice(0, 10));
             navigate(
-              `/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`
+              `/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(file.name)}`,
+              { state: { document: newDocument, project } }
             );
           } catch (error) {
             console.error('Fetch error:', error);
             alert(`Fetch error: ${error.message}`);
           } finally {
-            setIsLoading(false); // Hide loading spinner
+            setIsLoading(false);
           }
         } else {
           alert('This file has already been uploaded.');
@@ -170,43 +188,64 @@ const Filepage = () => {
     ? [...new Set(highlightedTerm.violations.map((v) => v['Law Name']))]
     : [];
 
-  return (
-    <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
-      {/* Sidebar */}
-      <Box
-        sx={{
-          width: '250px',
-          flexShrink: 0,
-          backgroundColor: '#f5f5f5',
-          padding: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          overflowY: 'auto',
-          borderRight: '1px solid #ddd',
-        }}
-      >
-        <Stack spacing={2}>
-        <Button
-          variant="contained"
-          startIcon={!isLoading && <PlayArrowIcon />} // Show the icon only when not loading
-          component="label"
-          sx={{ borderRadius: '8px' }}
-          disabled={isLoading} // Disable the button during loading
+    return (
+      <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+        {/* Sidebar */}
+        <Box
+          sx={{
+            width: '250px',
+            flexShrink: 0,
+            backgroundColor: '#f5f5f5',
+            padding: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto',
+            borderRight: '1px solid #ddd',
+          }}
         >
-          {isLoading ? (
-            <CircularProgress size={24} sx={{ color: 'white' }} /> // Show loading spinner
-          ) : (
-            'Scan .docx File'
-          )}
-          <input
-            type="file"
-            hidden
-            accept=".docx"
-            onChange={handleFileUpload}
-          />
-        </Button>
-        </Stack>
-      </Box>
+          <Stack spacing={2}>
+            <Typography variant="h6" sx={{ marginBottom: '16px' }}>
+              {project_name}
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={!isLoading && <PlayArrowIcon />}
+              component="label"
+              sx={{ borderRadius: '8px' }}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <CircularProgress size={24} sx={{ color: 'white' }} />
+              ) : (
+                'Scan .docx File'
+              )}
+              <input
+                type="file"
+                hidden
+                accept=".docx"
+                onChange={handleFileUpload}
+              />
+            </Button>
+  
+            {/* List of uploaded files for this project */}
+            <List>
+              {uploadedFiles.map((doc, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      navigate(
+                        `/dashboard/${encodeURIComponent(project_name)}/${encodeURIComponent(doc.name)}`,
+                        { state: { document: doc, project } }
+                      );
+                    }}
+                  >
+                    <ListItemText primary={doc.name} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Stack>
+        </Box>
 
       {/* Main Content */}
       <Box ref={containerRef} sx={{ display: 'flex', height: '100vh', flexGrow: 1, position: 'relative' }}>
