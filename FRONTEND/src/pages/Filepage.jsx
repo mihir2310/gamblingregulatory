@@ -41,15 +41,13 @@ const Filepage = () => {
   const documentFromState = location.state?.document;
 
   useEffect(() => {
-    if (project) {
-      const projects = JSON.parse(localStorage.getItem('projects')) || [];
-      const currentProject = projects.find(p => p.name === project.name);
-      
-      if (currentProject) {
-        setUploadedFiles(currentProject.documents || []);
-      }
+    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+    const currentProject = projects.find(p => p.name === project_name);
+    
+    if (currentProject?.documents) {
+      setUploadedFiles(currentProject.documents);
     }
-  }, [project]);
+  }, [project_name]);
 
   useEffect(() => {
     if (documentFromState) {
@@ -63,7 +61,7 @@ const Filepage = () => {
   const updateProjectDocuments = (documents) => {
     const projects = JSON.parse(localStorage.getItem('projects')) || [];
     const updatedProjects = projects.map(p => 
-      p.name === project.name ? { ...p, documents } : p
+      p.name === project_name ? { ...p, documents } : p
     );
     localStorage.setItem('projects', JSON.stringify(updatedProjects));
     setUploadedFiles(documents);
