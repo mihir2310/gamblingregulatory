@@ -11,11 +11,15 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Paper,
+  Avatar,
+  Chip
 } from '@mui/material';
-import { PlayArrow as PlayArrowIcon } from '@mui/icons-material';
+import { PlayArrow as PlayArrowIcon, Close as CloseIcon, Folder as FolderIcon } from '@mui/icons-material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import mammoth from 'mammoth';
+import { motion } from 'framer-motion';
 
 const Filepage = () => {
   const { project_name } = useParams();
@@ -24,7 +28,7 @@ const Filepage = () => {
   const [scanResult, setScanResult] = useState(null);
   const [documentStructure, setDocumentStructure] = useState(null);
   const [highlightedTerm, setHighlightedTerm] = useState(null);
-  const [resizeRatio, setResizeRatio] = useState(0.5); // 50/50 split by default
+  const [resizeRatio, setResizeRatio] = useState(0.5);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [expandedViolation, setExpandedViolation] = useState(null);
@@ -36,7 +40,6 @@ const Filepage = () => {
   const project = location.state?.project;
   const documentFromState = location.state?.document;
 
-  // Load project documents from localStorage
   useEffect(() => {
     if (project) {
       const projects = JSON.parse(localStorage.getItem('projects')) || [];
@@ -48,7 +51,6 @@ const Filepage = () => {
     }
   }, [project]);
 
-  // Handle loading a previously scanned document when navigating back
   useEffect(() => {
     if (documentFromState) {
       setSelectedFileContent(documentFromState.content);
@@ -58,7 +60,6 @@ const Filepage = () => {
     }
   }, [documentFromState]);
 
-  // Update localStorage when documents change
   const updateProjectDocuments = (documents) => {
     const projects = JSON.parse(localStorage.getItem('projects')) || [];
     const updatedProjects = projects.map(p => 
@@ -156,7 +157,6 @@ const Filepage = () => {
     setActiveTab(0);
   };
 
-  // Resizer slider handlers
   const handleResizeStart = (e) => {
     e.preventDefault();
     isDraggingRef.current = true;
@@ -167,7 +167,6 @@ const Filepage = () => {
   const handleResize = (e) => {
     if (!isDraggingRef.current || !containerRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
-    // Subtract the slider width (12px) from the total container width
     const containerWidth = containerRect.width - 12;
     const relativeX = e.clientX - containerRect.left;
     let newRatio = relativeX / containerWidth;
@@ -188,49 +187,76 @@ const Filepage = () => {
     };
   }, []);
 
-  // Compute unique law names from the highlighted term (if available)
   const uniqueLawNames = highlightedTerm?.violations
     ? [...new Set(highlightedTerm.violations.map((v) => v['Law Name']))]
     : [];
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+    <Box sx={{ display: 'flex', height: '100vh', background: '#f8f9fa' }}>
       {/* Sidebar */}
-      <Box
+      <Paper
+        elevation={0}
         sx={{
-          width: '250px',
-          flexShrink: 0,
-          backgroundColor: '#f5f5f5',
-          padding: 2,
+          width: '280px',
+          background: 'white',
+          padding: '2rem',
+          borderRight: '1px solid rgba(0,0,0,0.08)',
           display: 'flex',
           flexDirection: 'column',
-          overflowY: 'auto',
-          borderRight: '1px solid #ddd',
+          gap: '1.5rem',
         }}
       >
-        <Stack spacing={2}>
-          <Typography variant="h6" sx={{ marginBottom: '16px' }}>
-            {project_name}
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={!isLoading && <PlayArrowIcon />}
-            component="label"
-            sx={{ borderRadius: '8px' }}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} sx={{ color: 'white' }} />
-            ) : (
-              'Scan .docx File'
-            )}
-            <input type="file" hidden accept=".docx" onChange={handleFileUpload} />
-          </Button>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            color: '#1a1a1a',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}
+        >
+          <FolderIcon sx={{ color: '#2196F3' }} />
+          {project_name}
+        </Typography>
 
-          {/* List of uploaded files for this project */}
-          <List>
-            {uploadedFiles.map((doc, index) => (
-              <ListItem key={index} disablePadding>
+        <Button
+          variant="contained"
+          startIcon={!isLoading && <PlayArrowIcon />}
+          component="label"
+          disabled={isLoading}
+          sx={{
+            background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+            borderRadius: '12px',
+            padding: '12px',
+            textTransform: 'none',
+            fontSize: '1rem',
+            boxShadow: '0 4px 15px rgba(33, 150, 243, 0.2)',
+            '&:hover': {
+              background: 'linear-gradient(45deg, #1976D2 30%, #1E88E5 90%)',
+            },
+            '&.Mui-disabled': {
+              background: 'linear-gradient(45deg, #BDBDBD 30%, #E0E0E0 90%)',
+            }
+          }}
+        >
+          {isLoading ? (
+            <CircularProgress size={24} sx={{ color: 'white' }} />
+          ) : (
+            'Scan .docx File'
+          )}
+          <input type="file" hidden accept=".docx" onChange={handleFileUpload} />
+        </Button>
+
+        <List sx={{ flex: 1, overflow: 'auto' }}>
+          {uploadedFiles.map((doc, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              <ListItem disablePadding sx={{ marginBottom: '0.5rem' }}>
                 <ListItemButton
                   onClick={() => {
                     navigate(
@@ -238,43 +264,75 @@ const Filepage = () => {
                       { state: { document: doc, project } }
                     );
                   }}
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '12px',
+                    '&:hover': {
+                      background: 'rgba(33, 150, 243, 0.08)',
+                    }
+                  }}
                 >
-                  <ListItemText primary={doc.name} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        bgcolor: '#2196F3',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {doc.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <ListItemText
+                      primary={doc.name}
+                      sx={{
+                        '& .MuiTypography-root': {
+                          fontWeight: 500,
+                          color: '#1a1a1a',
+                        }
+                      }}
+                    />
+                  </Box>
                 </ListItemButton>
               </ListItem>
-            ))}
-          </List>
-        </Stack>
-      </Box>
+            </motion.div>
+          ))}
+        </List>
+      </Paper>
 
       {/* Main Content */}
       <Box
         ref={containerRef}
         sx={{
+          flex: 1,
           display: 'flex',
-          height: '100vh',
-          flexGrow: 1,
           position: 'relative',
+          background: 'white',
+          margin: '1rem',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden',
         }}
       >
         {/* Violations Panel */}
         <Box
           sx={{
             width: `${resizeRatio * 100}%`,
-            // Removed maxWidth to allow expansion
-            display: 'flex',
-            flexDirection: 'column',
-            border: '1px solid #ddd',
-            padding: '24px',
-            backgroundColor: '#f0f0f0',
+            padding: '2rem',
             overflowY: 'auto',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            position: 'relative',
+            background: '#f8f9fa',
           }}
         >
           {highlightedTerm && highlightedTerm.violations ? (
             <Box>
-              <Typography variant="h6" color="primary" sx={{ marginBottom: '16px' }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  marginBottom: '1.5rem',
+                  color: '#1a1a1a',
+                }}
+              >
                 Violations for: {highlightedTerm.text}
               </Typography>
 
@@ -286,9 +344,12 @@ const Filepage = () => {
                     variant="scrollable"
                     scrollButtons="auto"
                     sx={{
-                      borderBottom: '1px solid #ddd',
-                      marginBottom: '16px',
-                      width: '100%',
+                      borderBottom: '1px solid rgba(0,0,0,0.08)',
+                      marginBottom: '1.5rem',
+                      '& .MuiTab-root': {
+                        textTransform: 'none',
+                        fontWeight: 500,
+                      }
                     }}
                   >
                     {uniqueLawNames.map((lawName, index) => (
@@ -296,10 +357,8 @@ const Filepage = () => {
                         key={lawName}
                         label={lawName}
                         sx={{
-                          textTransform: 'none',
-                          maxWidth: '200px',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
+                          minWidth: 'auto',
+                          padding: '12px 16px',
                         }}
                       />
                     ))}
@@ -320,71 +379,108 @@ const Filepage = () => {
 
                               if (!hasYesViolations) {
                                 return (
-                                  <Typography
-                                    variant="body1"
-                                    color="textSecondary"
-                                    sx={{ textAlign: 'center', padding: '16px' }}
+                                  <Paper
+                                    elevation={0}
+                                    sx={{
+                                      padding: '1.5rem',
+                                      background: 'white',
+                                      borderRadius: '12px',
+                                      textAlign: 'center',
+                                    }}
                                   >
-                                    No violations flagged for this law
-                                  </Typography>
+                                    <Typography
+                                      variant="body1"
+                                      sx={{ color: 'rgba(0,0,0,0.7)' }}
+                                    >
+                                      No violations flagged for this law
+                                    </Typography>
+                                  </Paper>
                                 );
                               }
 
                               return violationsForLaw
                                 .filter((v) => v['Violation'] === 'Yes')
                                 .map((violation, vIndex) => (
-                                  <Box
+                                  <motion.div
                                     key={vIndex}
-                                    sx={{
-                                      marginBottom: '16px',
-                                      padding: '12px',
-                                      backgroundColor: 'white',
-                                      borderRadius: '4px',
-                                    }}
-                                    onClick={() =>
-                                      setExpandedViolation((prev) =>
-                                        prev === vIndex ? null : vIndex
-                                      )
-                                    }
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, delay: vIndex * 0.1 }}
                                   >
-                                    <Typography
-                                      variant="subtitle1"
-                                      fontWeight="bold"
-                                      color="primary"
-                                      sx={{ marginBottom: '8px' }}
-                                    >
-                                      {violation['Category']}
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
+                                    <Paper
+                                      elevation={0}
                                       sx={{
-                                        textOverflow:
-                                          expandedViolation === vIndex ? 'unset' : 'ellipsis',
-                                        overflow:
-                                          expandedViolation === vIndex ? 'visible' : 'hidden',
-                                        whiteSpace:
-                                          expandedViolation === vIndex ? 'normal' : 'nowrap',
-                                        width: '100%',
+                                        marginBottom: '1rem',
+                                        padding: '1.5rem',
+                                        background: 'white',
+                                        borderRadius: '12px',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        '&:hover': {
+                                          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                                        }
                                       }}
+                                      onClick={() =>
+                                        setExpandedViolation((prev) =>
+                                          prev === vIndex ? null : vIndex
+                                        )
+                                      }
                                     >
-                                      {violation['Law Text']}
-                                    </Typography>
+                                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                        <Chip
+                                          label={violation['Category']}
+                                          color="primary"
+                                          size="small"
+                                          sx={{
+                                            background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                                          }}
+                                        />
+                                      </Box>
+                                      <Typography
+                                        variant="body2"
+                                        sx={{
+                                          color: 'rgba(0,0,0,0.7)',
+                                          marginBottom: '1rem',
+                                          whiteSpace: expandedViolation === vIndex ? 'normal' : 'nowrap',
+                                          overflow: expandedViolation === vIndex ? 'visible' : 'hidden',
+                                          textOverflow: expandedViolation === vIndex ? 'unset' : 'ellipsis',
+                                        }}
+                                      >
+                                        {violation['Law Text']}
+                                      </Typography>
 
-                                    {/* Explanation below the law text */}
-                                    {violation['Explanation'] && (
-                                      <>
-                                        <Typography
-                                          variant="body2"
-                                          sx={{ fontWeight: 'bold', marginTop: '8px' }}
+                                      {violation['Explanation'] && (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{
+                                            height: expandedViolation === vIndex ? 'auto' : 0,
+                                            opacity: expandedViolation === vIndex ? 1 : 0,
+                                          }}
+                                          transition={{ duration: 0.3 }}
                                         >
-                                          Why this is a violation:
-                                        </Typography>
-                                        <Typography variant="body2" sx={{ marginTop: '4px' }}>
-                                          {violation['Explanation']}
-                                        </Typography>
-                                      </>
-                                    )}
-                                  </Box>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              fontWeight: 500,
+                                              color: '#1a1a1a',
+                                              marginTop: '0.5rem',
+                                            }}
+                                          >
+                                            Why this is a violation:
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              color: 'rgba(0,0,0,0.7)',
+                                              marginTop: '0.25rem',
+                                            }}
+                                          >
+                                            {violation['Explanation']}
+                                          </Typography>
+                                        </motion.div>
+                                      )}
+                                    </Paper>
+                                  </motion.div>
                                 ));
                             })()}
                           </Box>
@@ -393,15 +489,40 @@ const Filepage = () => {
                   </Box>
                 </>
               ) : (
-                <Typography variant="body1" color="textSecondary">
-                  No violations flagged!
-                </Typography>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    padding: '1.5rem',
+                    background: 'white',
+                    borderRadius: '12px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Typography variant="body1" sx={{ color: 'rgba(0,0,0,0.7)' }}>
+                    No violations flagged!
+                  </Typography>
+                </Paper>
               )}
             </Box>
           ) : (
-            <Typography variant="h6" color="textSecondary">
-              Click a term to view violations
-            </Typography>
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'rgba(0,0,0,0.5)',
+                  textAlign: 'center',
+                }}
+              >
+                Click a term to view violations
+              </Typography>
+            </Box>
           )}
         </Box>
 
@@ -411,8 +532,10 @@ const Filepage = () => {
           sx={{
             width: '12px',
             cursor: 'col-resize',
-            backgroundColor: 'grey.300',
-            '&:hover': { backgroundColor: 'grey.500' },
+            background: 'rgba(0,0,0,0.08)',
+            '&:hover': {
+              background: 'rgba(0,0,0,0.2)',
+            }
           }}
         />
 
@@ -420,35 +543,57 @@ const Filepage = () => {
         <Box
           sx={{
             width: `${(1 - resizeRatio) * 100}%`,
-            border: '1px solid #ddd',
-            borderRadius: '10px',
-            padding: '24px',
-            backgroundColor: '#fff',
+            padding: '2rem',
             overflowY: 'auto',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-            marginLeft: '6px',
-            minWidth: '100px',
+            background: 'white',
           }}
         >
           {documentStructure ? (
             documentStructure.map((para, index) => (
-              <Typography
+              <motion.div
                 key={index}
-                onClick={() => para.is_legal_term && handleTermClick(para)}
-                sx={{
-                  cursor: para.is_legal_term ? 'pointer' : 'default',
-                  color: para.is_legal_term ? 'blue' : 'black',
-                  textDecoration: para.is_legal_term ? 'underline' : 'none',
-                  marginBottom: '8px',
-                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
               >
-                {para.text}
-              </Typography>
+                <Typography
+                  onClick={() => para.is_legal_term && handleTermClick(para)}
+                  sx={{
+                    cursor: para.is_legal_term ? 'pointer' : 'default',
+                    color: para.is_legal_term ? '#2196F3' : 'rgba(0,0,0,0.87)',
+                    textDecoration: para.is_legal_term ? 'underline' : 'none',
+                    marginBottom: '1rem',
+                    padding: '0.5rem',
+                    borderRadius: '8px',
+                    transition: 'all 0.2s',
+                    '&:hover': para.is_legal_term && {
+                      background: 'rgba(33, 150, 243, 0.08)',
+                    }
+                  }}
+                >
+                  {para.text}
+                </Typography>
+              </motion.div>
             ))
           ) : (
-            <Typography style={{ color: 'gray', textAlign: 'center' }}>
-              No file selected
-            </Typography>
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  color: 'rgba(0,0,0,0.5)',
+                  textAlign: 'center',
+                }}
+              >
+                No file selected
+              </Typography>
+            </Box>
           )}
         </Box>
       </Box>

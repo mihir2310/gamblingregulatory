@@ -21,7 +21,27 @@ from BACKEND.file_processor import process_uploaded_file
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+
+# Configure CORS with more specific settings
+CORS(app, 
+     resources={
+         r"/*": {
+             "origins": ["http://localhost:5173"],
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+             "allow_headers": ["Content-Type", "Authorization"],
+             "supports_credentials": True,
+             "max_age": 3600
+         }
+     })
+
+# Add CORS headers to all responses
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
 
 STORAGE_FILE = 'storage.json'
@@ -74,10 +94,8 @@ def scan_doc():
             status=200,
             mimetype='application/json'
         )
-        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
-        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         return response
+        
     try:
         # Check if the request has the 'file' part
         if 'file' not in request.files:
@@ -131,6 +149,40 @@ def scan_doc():
     except Exception as e:
         print(f"Error occurred: {e}")  # Log the error in the console
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/login', methods=['POST', 'OPTIONS'])
+def login():
+    if request.method == 'OPTIONS':
+        return '', 200
+        
+    try:
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+
+        # For now, using hardcoded credentials
+        # In production, you should use proper authentication
+        if username == 'admin' and password == 'admin':
+            return jsonify({
+                'success': True,
+                'message': 'Login successful',
+                'user': {
+                    'username': username,
+                    'role': 'admin'
+                }
+            }), 200
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid credentials'
+            }), 401
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 
 if __name__ == "__main__":
