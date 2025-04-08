@@ -574,17 +574,28 @@ const Filepage = () => {
             documentStructure.map((para, index) => {
               // Get violation count for this term if it's a legal term
               const termViolations = para.is_legal_term 
-                ? scanResult?.find(result => result.term === para.text)?.violations.filter(v => v['Violation'] === 'Yes') || []
+                ? scanResult?.find(result => result.term === para.text)?.violations?.filter(v => v.Violation === 'Yes') || []
                 : [];
               const violationCount = termViolations.length;
               
               // Calculate color based on violation count
-              let termColor = '#000000';
+              let termColor = 'rgba(0,0,0,0.87)';
+              let bgColor = 'transparent';
+              
               if (para.is_legal_term) {
-                if (violationCount === 0) termColor = '#4caf50';  // Green for no violations
-                else if (violationCount === 1) termColor = '#ff9800';  // Orange for 1 violation
-                else if (violationCount === 2) termColor = '#f44336';  // Light red for 2 violations
-                else termColor = '#d32f2f';  // Dark red for 3 violations
+                if (violationCount === 0) {
+                  termColor = '#4caf50';
+                  bgColor = 'rgba(76, 175, 80, 0.1)';
+                } else if (violationCount === 1) {
+                  termColor = '#ff9800';
+                  bgColor = 'rgba(255, 152, 0, 0.1)';
+                } else if (violationCount === 2) {
+                  termColor = '#f44336';
+                  bgColor = 'rgba(244, 67, 54, 0.1)';
+                } else {
+                  termColor = '#d32f2f';
+                  bgColor = 'rgba(211, 47, 47, 0.1)';
+                }
               }
 
               return (
@@ -598,15 +609,15 @@ const Filepage = () => {
                     onClick={() => para.is_legal_term && handleTermClick(para)}
                     sx={{
                       cursor: para.is_legal_term ? 'pointer' : 'default',
-                      color: para.is_legal_term ? termColor : 'rgba(0,0,0,0.87)',
-                      backgroundColor: para.is_legal_term ? `${termColor}15` : 'transparent',
+                      color: termColor,
+                      backgroundColor: bgColor,
                       marginBottom: '1rem',
                       padding: '0.5rem',
                       borderRadius: '8px',
                       transition: 'all 0.2s',
-                      '&:hover': para.is_legal_term && {
-                        backgroundColor: `${termColor}25`,
-                      }
+                      '&:hover': para.is_legal_term ? {
+                        backgroundColor: para.is_legal_term ? `${bgColor.slice(0, -4)}0.2)` : 'transparent',
+                      } : undefined
                     }}
                   >
                     {para.text}
