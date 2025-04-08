@@ -117,27 +117,31 @@ function Dashboard() {
   }, [editingProjectIndex]);
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      width: '100%',
-      height: '100%',
-      background: '#f8f9fa'
-    }}>
+    <Box
+      sx={{
+        width: '100vw',
+        height: 'calc(100vh - 64px)',
+        display: 'flex',
+        position: 'fixed',
+        top: '64px',
+        left: 0,
+        background: '#f8f9fa',
+        overflow: 'hidden'
+      }}
+    >
       {/* Sidebar */}
       <Paper
         elevation={0}
         sx={{
           width: '280px',
-          minWidth: '280px',
-          background: 'white',
           height: '100%',
+          background: 'white',
           borderRight: '1px solid rgba(0,0,0,0.08)',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.5rem',
-          p: '2rem',
-          position: 'sticky',
-          top: '64px',
+          padding: '2rem',
+          overflow: 'auto'
         }}
       >
         <Typography
@@ -262,12 +266,13 @@ function Dashboard() {
       <Box
         sx={{
           flex: 1,
+          height: '100%',
+          overflow: 'auto',
           p: { xs: 2, md: 4 },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
+          justifyContent: selectedProject ? 'flex-start' : 'center'
         }}
       >
         {selectedProject?.documents?.[0] ? (

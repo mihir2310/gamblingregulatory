@@ -8,15 +8,17 @@ function Home() {
   return (
     <Box
       sx={{
-        width: '100%',
-        minHeight: '100%',
+        width: '100vw',
+        height: 'calc(100vh - 64px)',
         background: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
         color: 'white',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'relative',
+        position: 'fixed',
+        top: '64px',
+        left: 0,
         overflow: 'hidden',
         '&::before': {
           content: '""',
@@ -30,7 +32,7 @@ function Home() {
         }
       }}
     >
-      <Container maxWidth={false} sx={{ width: '100%', px: { xs: 2, sm: 3, md: 4 } }}>
+      <Container maxWidth="md" sx={{ width: '100%' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
