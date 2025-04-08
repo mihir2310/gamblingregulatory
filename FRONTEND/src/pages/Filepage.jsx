@@ -571,32 +571,49 @@ const Filepage = () => {
           }}
         >
           {documentStructure ? (
-            documentStructure.map((para, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-              >
-                <Typography
-                  onClick={() => para.is_legal_term && handleTermClick(para)}
-                  sx={{
-                    cursor: para.is_legal_term ? 'pointer' : 'default',
-                    color: para.is_legal_term ? '#2196F3' : 'rgba(0,0,0,0.87)',
-                    textDecoration: para.is_legal_term ? 'underline' : 'none',
-                    marginBottom: '1rem',
-                    padding: '0.5rem',
-                    borderRadius: '8px',
-                    transition: 'all 0.2s',
-                    '&:hover': para.is_legal_term && {
-                      background: 'rgba(33, 150, 243, 0.08)',
-                    }
-                  }}
+            documentStructure.map((para, index) => {
+              // Get violation count for this term if it's a legal term
+              const termViolations = para.is_legal_term 
+                ? scanResult?.find(result => result.term === para.text)?.violations.filter(v => v['Violation'] === 'Yes') || []
+                : [];
+              const violationCount = termViolations.length;
+              
+              // Calculate color based on violation count
+              let termColor = '#000000';
+              if (para.is_legal_term) {
+                if (violationCount === 0) termColor = '#4caf50';  // Green for no violations
+                else if (violationCount === 1) termColor = '#ff9800';  // Orange for 1 violation
+                else if (violationCount === 2) termColor = '#f44336';  // Light red for 2 violations
+                else termColor = '#d32f2f';  // Dark red for 3 violations
+              }
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
-                  {para.text}
-                </Typography>
-              </motion.div>
-            ))
+                  <Typography
+                    onClick={() => para.is_legal_term && handleTermClick(para)}
+                    sx={{
+                      cursor: para.is_legal_term ? 'pointer' : 'default',
+                      color: para.is_legal_term ? termColor : 'rgba(0,0,0,0.87)',
+                      backgroundColor: para.is_legal_term ? `${termColor}15` : 'transparent',
+                      marginBottom: '1rem',
+                      padding: '0.5rem',
+                      borderRadius: '8px',
+                      transition: 'all 0.2s',
+                      '&:hover': para.is_legal_term && {
+                        backgroundColor: `${termColor}25`,
+                      }
+                    }}
+                  >
+                    {para.text}
+                  </Typography>
+                </motion.div>
+              );
+            })
           ) : (
             <Box
               sx={{
