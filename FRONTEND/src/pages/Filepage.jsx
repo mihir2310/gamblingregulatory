@@ -190,18 +190,33 @@ const Filepage = () => {
     : [];
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', background: '#f8f9fa' }}>
+    <Box
+      sx={{
+        width: '100%',
+        height: 'calc(100vh - 64px)',
+        display: 'flex',
+        position: 'fixed',
+        top: '64px',
+        left: 0,
+        right: 0,
+        background: '#f8f9fa',
+        overflow: 'hidden'
+      }}
+    >
       {/* Sidebar */}
       <Paper
         elevation={0}
         sx={{
           width: '280px',
+          minWidth: '280px',
+          height: '100%',
           background: 'white',
           padding: '2rem',
           borderRight: '1px solid rgba(0,0,0,0.08)',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.5rem',
+          overflow: 'auto'
         }}
       >
         <Typography
@@ -303,22 +318,23 @@ const Filepage = () => {
         ref={containerRef}
         sx={{
           flex: 1,
+          width: 'calc(100% - 280px)',
+          height: '100%',
           display: 'flex',
-          position: 'relative',
           background: 'white',
-          margin: '1rem',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          overflow: 'hidden',
+          overflow: 'hidden'
         }}
       >
         {/* Violations Panel */}
         <Box
           sx={{
             width: `${resizeRatio * 100}%`,
+            height: '100%',
             padding: '2rem',
             overflowY: 'auto',
             background: '#f8f9fa',
+            borderRight: '1px solid rgba(0,0,0,0.08)',
+            position: 'relative'
           }}
         >
           {highlightedTerm && highlightedTerm.violations ? (
@@ -506,16 +522,22 @@ const Filepage = () => {
             <Box
               sx={{
                 height: '100%',
+                width: '300px',
+                margin: '0 auto',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)'
               }}
             >
               <Typography
                 variant="h6"
                 sx={{
                   color: 'rgba(0,0,0,0.5)',
-                  textAlign: 'center',
+                  textAlign: 'center'
                 }}
               >
                 Click a term to view violations
@@ -524,7 +546,7 @@ const Filepage = () => {
           )}
         </Box>
 
-        {/* Resizer Slider */}
+        {/* Resizer */}
         <Box
           onMouseDown={handleResizeStart}
           sx={{
@@ -541,9 +563,11 @@ const Filepage = () => {
         <Box
           sx={{
             width: `${(1 - resizeRatio) * 100}%`,
+            height: '100%',
             padding: '2rem',
             overflowY: 'auto',
             background: 'white',
+            position: 'relative'
           }}
         >
           {documentStructure ? (
@@ -577,16 +601,22 @@ const Filepage = () => {
             <Box
               sx={{
                 height: '100%',
+                width: '300px',
+                margin: '0 auto',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)'
               }}
             >
               <Typography
                 variant="h6"
                 sx={{
                   color: 'rgba(0,0,0,0.5)',
-                  textAlign: 'center',
+                  textAlign: 'center'
                 }}
               >
                 No file selected
