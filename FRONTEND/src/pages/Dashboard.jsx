@@ -12,18 +12,30 @@ import {
   TextField,
   Paper,
   Avatar,
+  Dialog,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
-import { Add as AddIcon, Close as CloseIcon, Check as CheckIcon, Folder as FolderIcon } from '@mui/icons-material';
+import { 
+  Add as AddIcon, 
+  Close as CloseIcon, 
+  Check as CheckIcon, 
+  Folder as FolderIcon,
+  Share as ShareIcon,
+  Download as DownloadIcon,
+} from '@mui/icons-material';
 import { useState, useRef, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);
   const [newProjectName, setNewProjectName] = useState('');
+  const [selectedProject, setSelectedProject] = useState(null);
   const inputRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Load projects from localStorage on mount
   useEffect(() => {
@@ -68,6 +80,35 @@ function Dashboard() {
     setEditingProjectIndex(null);
   };
 
+  const handleProjectClick = (project, index) => {
+    if (editingProjectIndex === index) return;
+    setSelectedProject(project);
+  };
+
+  const handleDoubleClick = (project) => {
+    navigate(`/dashboard/${encodeURIComponent(project.name)}`);
+  };
+
+  const handleShare = () => {
+    // Implement share functionality
+    alert('Share functionality coming soon!');
+  };
+
+  const handleDownload = () => {
+    if (selectedProject?.documents?.[0]) {
+      const document = selectedProject.documents[0];
+      const blob = new Blob([document.content], { type: 'text/html' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${selectedProject.name}_preview.html`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  };
+
   // Auto-focus on rename input
   useEffect(() => {
     if (editingProjectIndex !== null && inputRef.current) {
@@ -76,18 +117,27 @@ function Dashboard() {
   }, [editingProjectIndex]);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', background: '#f8f9fa' }}>
+    <Box sx={{ 
+      display: 'flex', 
+      width: '100%',
+      height: '100%',
+      background: '#f8f9fa'
+    }}>
       {/* Sidebar */}
       <Paper
         elevation={0}
         sx={{
           width: '280px',
+          minWidth: '280px',
           background: 'white',
-          padding: '2rem',
+          height: '100%',
           borderRight: '1px solid rgba(0,0,0,0.08)',
           display: 'flex',
           flexDirection: 'column',
           gap: '1.5rem',
+          p: '2rem',
+          position: 'sticky',
+          top: '64px',
         }}
       >
         <Typography
@@ -133,9 +183,8 @@ function Dashboard() {
             >
               <ListItem disablePadding sx={{ marginBottom: '0.5rem' }}>
                 <ListItemButton
-                  component={Link}
-                  to={`/dashboard/${encodeURIComponent(project.name)}`}
-                  state={{ project: project }}
+                  onClick={() => handleProjectClick(project, index)}
+                  onDoubleClick={() => handleDoubleClick(project)}
                   sx={{
                     borderRadius: '12px',
                     padding: '12px',
@@ -213,42 +262,112 @@ function Dashboard() {
       <Box
         sx={{
           flex: 1,
-          padding: '3rem',
+          p: { xs: 2, md: 4 },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          width: '100%',
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              marginBottom: '1rem',
-              background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
+        {selectedProject?.documents?.[0] ? (
+          <Box sx={{ width: '100%', maxWidth: '1200px' }}>
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              mb: 3 
+            }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 600,
+                  color: '#1a1a1a',
+                }}
+              >
+                {selectedProject.name}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  startIcon={<ShareIcon />}
+                  onClick={handleShare}
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                  }}
+                >
+                  Share
+                </Button>
+                <Button
+                  startIcon={<DownloadIcon />}
+                  onClick={handleDownload}
+                  variant="contained"
+                  sx={{
+                    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                    '&:hover': {
+                      background: 'linear-gradient(45deg, #1976D2 30%, #1E88E5 90%)',
+                    }
+                  }}
+                >
+                  Download
+                </Button>
+              </Box>
+            </Box>
+            <Paper
+              elevation={0}
+              sx={{
+                height: 'calc(100vh - 250px)',
+                overflow: 'auto',
+                padding: '2rem',
+                background: '#fff',
+                border: '1px solid rgba(0,0,0,0.08)',
+                borderRadius: '12px',
+              }}
+            >
+              <Box
+                dangerouslySetInnerHTML={{
+                  __html: selectedProject.documents[0].content
+                }}
+              />
+            </Paper>
+          </Box>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ width: '100%', maxWidth: '1200px' }}
           >
-            Welcome to Your Dashboard
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: 'rgba(0,0,0,0.7)',
-              textAlign: 'center',
-              maxWidth: '600px',
-            }}
-          >
-            Create a new project or select an existing one to manage your documents.
-            All your regulatory compliance work is organized here.
-          </Typography>
-        </motion.div>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                marginBottom: '1rem',
+                background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                textAlign: 'center',
+              }}
+            >
+              Welcome to Your Dashboard
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'rgba(0,0,0,0.7)',
+                textAlign: 'center',
+                maxWidth: '600px',
+                mx: 'auto',
+                mb: 4,
+              }}
+            >
+              Create a new project or select an existing one to manage your documents.
+              All your regulatory compliance work is organized here.
+            </Typography>
+          </motion.div>
+        )}
       </Box>
     </Box>
   );
